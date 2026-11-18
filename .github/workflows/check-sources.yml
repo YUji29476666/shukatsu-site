@@ -1,0 +1,40 @@
+# 出典の自動チェック（週1回）
+# 出典の URL を開いて、リンク切れ・内容の変化・見直しの時期を調べる。
+# 要確認があれば Issue を作る（GitHub からメールで届く）。記事が間違いかどうかの判断はしない（人が Claude に頼む）。
+# AI は使わないので費用はかからない。
+name: 出典の自動チェック
+
+on:
+  schedule:
+    - cron: "17 0 * * 1" # 毎週月曜 0:17（UTC）＝日本時間 9:17
+  workflow_dispatch: # Actions タブから手動でも動かせる
+
+permissions:
+  contents: write # 前回の文字（data/source-snapshots.json）を保存するため
+  issues: write # 要確認の一覧を Issue にするため
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - id: check
+        run: node scripts/check-sources.mjs
+      - name: 前回の文字を保存
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/source-snapshots.json
+          # [CF-Pages-Skip]：この保存では Cloudflare のサイトを作り直さない
+          git diff --cached --quiet || (git commit -m "出典の自動チェックの記録を更新 [CF-Pages-Skip]" && git push)
+      - name: 要確認があれば Issue を作る
+        if: steps.check.outputs.needs != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "出典の自動チェック：要確認 $(date -u +%Y-%m-%d)" --body-file check-report.md

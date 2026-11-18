@@ -52,6 +52,12 @@ docs/ の資料（site-design-decisions.md、CLAUDE-old.md）は前のやり方�
 - 次の見直し予定日は保存しない（最終確認日＋間隔で計算）。**画面には出さない**。期限切れの表示も出さない（ユーザーの指示）。画面に出すのは最終確認日だけ
 - 例：src/data/articles/los-angeles-career-forum.ts
 
+## 出典の自動チェック（週1回）
+- `.github/workflows/check-sources.yml` が毎週月曜（日本時間 9:17）に `scripts/check-sources.mjs` を動かす。手元では `npm run check:sources`
+- 調べること：出典の URL が開けるか、前回から文字が変わったか（前回の文字は `data/source-snapshots.json`）、見直しの時期が来た記事（14日以内を含む）
+- 要確認があれば GitHub に Issue「出典の自動チェック：要確認」ができる。AI は使わない（費用なし）
+- Issue が来たら、ユーザーが Claude に「この記事を確認して」と頼む → Claude が変わった所と記事を照らし合わせて修正案を出す → 見本 → OK で公開。変更がなければ、ユーザーが確認日を伝えて最終確認日を更新する
+
 ## 写真
 - Unsplash の無料写真（Unsplash License。Unsplash+ は使わない）を、images.unsplash.com から直接表示する。src/data/site.ts の photos に、写真の URL・撮影者・写真ページの URL を記録する
 - 写真が決まっていない枠は、灰色の「写真（仮）」のまま。AI 生成画像は使わない

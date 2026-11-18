@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "shot": "node scripts/shot.mjs"
+    "shot": "node scripts/shot.mjs",
+    "check:sources": "node scripts/check-sources.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.74.0",
