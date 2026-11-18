@@ -63,8 +63,8 @@ async function fetchSource(url) {
       redirect: "follow",
       signal: AbortSignal.timeout(30000),
       headers: {
-        // 一般的なブラウザと同じ形で頼む（自動の読み込みを断るサイトがあるため）
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+        // 正体を隠さず名乗る（ブラウザのふりはしない）。断られた出典は人の見直しに回す
+        "user-agent": "shukatsu-site-source-check/1.0 (+https://github.com/YUji29476666/shukatsu-site)",
         accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "accept-language": "ja,en;q=0.8",
       },
