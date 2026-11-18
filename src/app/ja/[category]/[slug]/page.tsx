@@ -5,7 +5,6 @@ import { ArticleBody, buildToc, Toc } from "@/components/ArticleBody";
 import { ArticleCard, labelColor } from "@/components/ArticleCard";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Photo } from "@/components/Photo";
-import { ReviewNotice } from "@/components/ReviewNotice";
 import { articles } from "@/data/articles";
 import { categories } from "@/data/categories";
 import { site } from "@/data/site";
@@ -20,7 +19,6 @@ import {
   prevNext,
   relatedOf,
   sectionOf,
-  nextReview,
 } from "@/lib/content";
 
 export const dynamicParams = false;
@@ -136,18 +134,12 @@ export default async function ArticlePage({ params }: { params: Params }) {
                 </a>
               )}
               <span className="text-sub">更新日：{dateOrPlaceholder(a.updated)}</span>
-              {a.reviewInterval && (
-                <span className="text-sub">
-                  次の見直し予定日：{nextReview(a) || "［最終確認後に決まります］"}
-                </span>
-              )}
             </p>
             {a.blocks && !a.lastChecked && (
               <p className="mt-4 rounded-xl border border-dashed border-line bg-white px-4 py-3 text-sm text-sub">
                 この記事は、まだ確認担当が出典を確かめていません（AI が出典と照らし合わせた段階です）。
               </p>
             )}
-            <ReviewNotice next={nextReview(a)} />
           </header>
 
           <div className="mt-6 aspect-video">
