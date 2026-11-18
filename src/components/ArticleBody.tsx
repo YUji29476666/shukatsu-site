@@ -43,25 +43,9 @@ export function Toc({ toc, open = true }: { toc: TocItem[]; open?: boolean }) {
   );
 }
 
-/** 文中の [S1] を、出典一覧へのリンク（小さな上付き文字）にする */
+/** 文中の [S1] などの出典の印は、読む人には見せない（出典は記事データに持つだけ） */
 function Cite({ text }: { text: string }) {
-  const parts = text.split(/(\[S\d+\])/);
-  return (
-    <>
-      {parts.map((t, i) => {
-        const m = t.match(/^\[(S\d+)\]$/);
-        return m ? (
-          <sup key={i} className="ml-0.5 text-[10px] font-bold">
-            <a href={`#src-${m[1]}`} className="text-navy underline decoration-dotted underline-offset-2">
-              {m[1]}
-            </a>
-          </sup>
-        ) : (
-          t
-        );
-      })}
-    </>
-  );
+  return <>{text.replace(/\s?\[S\d+\]\s?/g, "")}</>;
 }
 
 export function ArticleBody({ blocks, numbers }: { blocks: Block[]; numbers: Record<string, string> }) {

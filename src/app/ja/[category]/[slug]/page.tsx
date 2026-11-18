@@ -20,7 +20,6 @@ import {
   prevNext,
   relatedOf,
   sectionOf,
-  intervalLabel,
   nextReview,
 } from "@/lib/content";
 
@@ -139,7 +138,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
               <span className="text-sub">更新日：{dateOrPlaceholder(a.updated)}</span>
               {a.reviewInterval && (
                 <span className="text-sub">
-                  次の見直し予定日：{nextReview(a) || "［最終確認後に決まります］"}（{intervalLabel[a.reviewInterval]}）
+                  次の見直し予定日：{nextReview(a) || "［最終確認後に決まります］"}
                 </span>
               )}
             </p>
@@ -171,31 +170,8 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
           <div className="mt-8 space-y-6 md:hidden">{sideCards}</div>
 
-          <section aria-label="出典" className="mt-10 rounded-2xl bg-slate-100/70 p-5 text-sm">
-            <p className="font-bold">出典</p>
-            {a.sources.length ? (
-              <ol className="mt-3 space-y-3">
-                {a.sources.map((s) => (
-                  <li key={s.id} id={`src-${s.id}`} className="scroll-mt-24 rounded-xl bg-white p-3">
-                    <p>
-                      <span className="mr-1.5 rounded bg-navy px-1.5 py-0.5 text-[11px] font-bold text-white">{s.id}</span>
-                      <a href={s.url} target="_blank" rel="noopener" className="font-medium text-navy underline underline-offset-2">
-                        {s.title}
-                      </a>
-                      <span className="text-sub">（{s.publisher}）</span>
-                    </p>
-                    <p className="mt-1 text-xs text-sub">裏付けている内容：{s.supports}</p>
-                    <p className="mt-0.5 text-xs text-sub">
-                      AI が照合した日：{s.aiOpened || "—"}／確認担当が確かめた日：{s.checked || "未確認"}
-                    </p>
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <p className="mt-1 text-sub">［確認後に入れます］</p>
-            )}
-            {a.origin && <p className="mt-2 text-xs text-sub">この記事は Ryugaku Wiki「{a.origin}」をもとに作成しています。</p>}
-          </section>
+          {/* 出典は記事データ（sources）に持つだけで、読む人には見せない（ユーザーの指示） */}
+          {a.origin && <p className="mt-10 text-xs text-sub">この記事は Ryugaku Wiki「{a.origin}」をもとに作成しています。</p>}
 
           <section aria-labelledby="report-h" className="mt-5 flex flex-wrap items-center gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
             <span className="grid h-10 w-10 place-items-center rounded-full bg-amber-soft text-amber-ink">
