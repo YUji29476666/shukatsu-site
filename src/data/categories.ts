@@ -10,11 +10,16 @@ export const categories: Category[] = [
     en: "BOSTON",
     tagline: "学生から人気なページ",
     icon: "globe",
-    sections: [{ id: "bosscari", name: "ボスキャリ", icon: "plane", articles: ["boston-career-forum", "growth-mindset"] }],
-    features: {
-      name: "人気のページ",
-      articles: ["growth-mindset", "application-prep", "selection-tests", "interview-prep", "final-check"],
-    },
+    // ボスキャリの記事一覧に並ぶ6記事（ユーザーの指示）。応募準備・選考試験・面接対策・直前・当日リマインドは
+    // 応募・面接にある記事で、ボスキャリの一覧にも出す（記事の URL は応募・面接のまま）
+    sections: [
+      {
+        id: "bosscari",
+        name: "ボスキャリ",
+        icon: "plane",
+        articles: ["boston-career-forum", "growth-mindset", "application-prep", "selection-tests", "interview-prep", "final-check"],
+      },
+    ],
   },
   {
     id: "timeline",
