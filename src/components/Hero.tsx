@@ -1,14 +1,15 @@
 "use client";
 
 import { ArrowRight, Search } from "lucide-react";
-import { site } from "@/data/site";
+import { photos, site } from "@/data/site";
 
 export function Hero() {
   return (
     <section className="relative isolate overflow-hidden bg-navy-soft">
       {/* 写真（仮）：Unsplash の写真が入るまでは紺の地。写真が入ったら暗めの重ねを残して文字を読みやすくする */}
-      <div className="absolute inset-0 -z-10 bg-[#24405f]" aria-hidden="true" />
-      <p className="absolute bottom-3 right-4 text-[11px] text-white/50">写真（仮）</p>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={photos.hero.src} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover" />
+      <div className="absolute inset-0 -z-10 bg-[#1b2f48]/60" aria-hidden="true" />
       <div className="mx-auto max-w-4xl px-5 py-24 text-center md:py-32">
         <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">{site.catch}</h1>
         <p className="mt-4 text-sm text-white/85 md:text-base">{site.lead}</p>

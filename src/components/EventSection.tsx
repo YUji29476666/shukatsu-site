@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
-import { events } from "@/data/site";
+import { events, photos } from "@/data/site";
 
 // イベント：グロキャリのイベントのバナー（リンク先は後で決める。日付は載せない）
 export function EventSection() {
@@ -10,8 +10,10 @@ export function EventSection() {
       <h2 id="ev-h" className="text-2xl font-bold tracking-tight">
         イベント
       </h2>
-      <div className="relative mt-8 overflow-hidden rounded-3xl bg-[#1d3653] px-7 py-10 text-white md:px-12 md:py-14">
-        <p className="absolute bottom-3 right-4 text-[11px] text-white/50">写真（仮）</p>
+      <div className="relative isolate mt-8 overflow-hidden rounded-3xl bg-[#1d3653] px-7 py-10 text-white md:px-12 md:py-14">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={photos.event.src} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover" />
+        <div className="absolute inset-0 -z-10 bg-[#1b2f48]/65" aria-hidden="true" />
         <span className="inline-block rounded-full bg-amber-soft px-3 py-0.5 text-xs font-bold text-amber-ink">{b.label}</span>
         <p className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">{b.title}</p>
         <p className="mt-2 text-sm text-white/85">{b.text}</p>

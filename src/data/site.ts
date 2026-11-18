@@ -20,9 +20,16 @@ export const events = {
   },
 };
 
-// 写真：Unsplash から選んで public/images/ に置いたら、ここに記録する
-// （撮影者名と元 URL。まだ写真がないあいだは、カテゴリの色の「写真（仮）」を表示する）
-export const photos: Record<string, { src: string; credit: string; url: string }> = {};
+// 写真：Unsplash の無料写真（Unsplash License）を images.unsplash.com から直接表示している。credit は撮影者、url は写真のページ
+// 写真がない id は、カテゴリの色の「写真（仮）」を表示する
+export const photos: Record<string, { src: string; credit: string; url: string }> = {
+  "hero": { src: "https://images.unsplash.com/photo-1729040270328-e6fe63597dac?auto=format&fit=crop&q=70&w=2000", credit: "Austin", url: "https://unsplash.com/photos/81Dvbf3e7so" },
+  "event": { src: "https://images.unsplash.com/photo-1626855428287-7ae49119eda6?auto=format&fit=crop&q=70&w=2000", credit: "Wei Zeng", url: "https://unsplash.com/photos/e_6kPuccYvk" },
+  "growth-mindset": { src: "https://images.unsplash.com/photo-1762890515866-3b1b34e13133?auto=format&fit=crop&q=70&w=600", credit: "Austin Phillips", url: "https://unsplash.com/photos/Ek9x7Nav3Fw" },
+  "application-prep": { src: "https://images.unsplash.com/photo-1654267288787-a571aecf0505?auto=format&fit=crop&q=70&w=600", credit: "Rui Silvestre", url: "https://unsplash.com/photos/9vxJQmZmTYU" },
+  "selection-tests": { src: "https://images.unsplash.com/photo-1727109369808-fbab005cca4b?auto=format&fit=crop&q=70&w=600", credit: "C Cai", url: "https://unsplash.com/photos/nkgAw4SFsWM" },
+  "interview-prep": { src: "https://images.unsplash.com/photo-1627618998627-70a92a874cc2?auto=format&fit=crop&q=70&w=600", credit: "Mediamodifier", url: "https://unsplash.com/photos/ehI8qokwP7s" },
+};
 
 // よく読まれている記事：どの記事を出すかは後で決める（推測で選ばない）。今は空きの枠を6つ表示する
 export const popularSlots = 6;
