@@ -5,6 +5,7 @@ import { ArticleBody, buildToc, Toc } from "@/components/ArticleBody";
 import { ArticleCard, labelColor } from "@/components/ArticleCard";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Photo } from "@/components/Photo";
+import { ReviewNotice } from "@/components/ReviewNotice";
 import { articles } from "@/data/articles";
 import { categories } from "@/data/categories";
 import { site } from "@/data/site";
@@ -19,6 +20,8 @@ import {
   prevNext,
   relatedOf,
   sectionOf,
+  intervalLabel,
+  nextReview,
 } from "@/lib/content";
 
 export const dynamicParams = false;
@@ -120,7 +123,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
             <div className="flex items-start gap-4">
               <div className="shrink-0 rounded-lg border border-line bg-white px-3 py-1.5 text-center">
                 <p className="text-[10px] text-sub">最終確認日</p>
-                <p className="text-sm font-bold">{dateOrPlaceholder(a.lastChecked)}</p>
+                <p className="text-sm font-bold">{a.lastChecked || "未確認"}</p>
               </div>
               <h1 className="pt-1 text-2xl font-bold leading-snug tracking-tight md:text-3xl">{a.title}</h1>
             </div>
@@ -134,7 +137,18 @@ export default async function ArticlePage({ params }: { params: Params }) {
                 </a>
               )}
               <span className="text-sub">更新日：{dateOrPlaceholder(a.updated)}</span>
+              {a.reviewInterval && (
+                <span className="text-sub">
+                  次の見直し予定日：{nextReview(a) || "［最終確認後に決まります］"}（{intervalLabel[a.reviewInterval]}）
+                </span>
+              )}
             </p>
+            {a.blocks && !a.lastChecked && (
+              <p className="mt-4 rounded-xl border border-dashed border-line bg-white px-4 py-3 text-sm text-sub">
+                この記事は、まだ確認担当が出典を確かめていません（AI が出典と照らし合わせた段階です）。
+              </p>
+            )}
+            <ReviewNotice next={nextReview(a)} />
           </header>
 
           <div className="mt-6 aspect-video">
@@ -160,14 +174,20 @@ export default async function ArticlePage({ params }: { params: Params }) {
           <section aria-label="出典" className="mt-10 rounded-2xl bg-slate-100/70 p-5 text-sm">
             <p className="font-bold">出典</p>
             {a.sources.length ? (
-              <ol className="mt-2 space-y-1">
+              <ol className="mt-3 space-y-3">
                 {a.sources.map((s) => (
-                  <li key={s.id} id={`src-${s.id}`}>
-                    {s.id}
-                    <a href={s.url} target="_blank" rel="noopener" className="underline">
-                      {s.title}
-                    </a>
-                    （{s.publisher}）最終確認日：{dateOrPlaceholder(s.checked)}
+                  <li key={s.id} id={`src-${s.id}`} className="scroll-mt-24 rounded-xl bg-white p-3">
+                    <p>
+                      <span className="mr-1.5 rounded bg-navy px-1.5 py-0.5 text-[11px] font-bold text-white">{s.id}</span>
+                      <a href={s.url} target="_blank" rel="noopener" className="font-medium text-navy underline underline-offset-2">
+                        {s.title}
+                      </a>
+                      <span className="text-sub">（{s.publisher}）</span>
+                    </p>
+                    <p className="mt-1 text-xs text-sub">裏付けている内容：{s.supports}</p>
+                    <p className="mt-0.5 text-xs text-sub">
+                      AI が照合した日：{s.aiOpened || "—"}／確認担当が確かめた日：{s.checked || "未確認"}
+                    </p>
                   </li>
                 ))}
               </ol>

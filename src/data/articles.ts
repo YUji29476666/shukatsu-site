@@ -1,5 +1,6 @@
 import type { Article, CategoryId } from "./types";
 import { selfPr } from "./articles/self-pr";
+import { losAngelesCareerForum } from "./articles/los-angeles-career-forum";
 
 // 記事の一覧。本文（blocks）がない記事は「準備中」のページになる
 // 日付・出典は確認するまで空のまま（画面では［日付］［確認後に入れます］と表示）
@@ -26,7 +27,7 @@ export const articles: Article[] = [
   stub("linkedin-guide", "LinkedIn", "jobs", "就活サイト・アプリ/LinkedIn"),
   stub("job-platforms-by-country", "各国主要プラットフォーム", "jobs", "就活サイト・アプリ/各国主要プラットフォーム", { popular: 4 }),
   stub("domestic-career-forums", "国内開催フォーラム", "jobs", "国内開催フォーラム"),
-  stub("los-angeles-career-forum", "ロサンゼルスキャリアフォーラム", "jobs", "ロサンゼルスキャリアフォーラム"),
+  losAngelesCareerForum,
   stub("london-career-forum", "ロンドンキャリアフォーラム", "jobs", "ロンキャリ"),
   stub("tkf-global-talent-expo", "TKF", "jobs", "TKF"),
   stub("alpha-adviser", "Alphaアドバイザー", "jobs", "Alphaアドバイザー"),

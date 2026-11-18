@@ -1,4 +1,4 @@
-import { CheckCircle2, ListOrdered, Quote, XCircle } from "lucide-react";
+import { CheckCircle2, ListOrdered, Quote, XCircle, ExternalLink } from "lucide-react";
 import type { Block } from "@/data/types";
 
 export type TocItem = { id: string; label: string; level: 2 | 3 };
@@ -43,6 +43,27 @@ export function Toc({ toc, open = true }: { toc: TocItem[]; open?: boolean }) {
   );
 }
 
+/** 文中の [S1] を、出典一覧へのリンク（小さな上付き文字）にする */
+function Cite({ text }: { text: string }) {
+  const parts = text.split(/(\[S\d+\])/);
+  return (
+    <>
+      {parts.map((t, i) => {
+        const m = t.match(/^\[(S\d+)\]$/);
+        return m ? (
+          <sup key={i} className="ml-0.5 text-[10px] font-bold">
+            <a href={`#src-${m[1]}`} className="text-navy underline decoration-dotted underline-offset-2">
+              {m[1]}
+            </a>
+          </sup>
+        ) : (
+          t
+        );
+      })}
+    </>
+  );
+}
+
 export function ArticleBody({ blocks, numbers }: { blocks: Block[]; numbers: Record<string, string> }) {
   return (
     <div className="space-y-5">
@@ -63,13 +84,13 @@ export function ArticleBody({ blocks, numbers }: { blocks: Block[]; numbers: Rec
           case "p":
             return (
               <p key={i} className="prose-ja leading-[1.9]">
-                {b.text}
+                <Cite text={b.text} />
               </p>
             );
           case "note":
             return (
               <p key={i} className="rounded-xl bg-amber-soft px-4 py-3 text-sm text-amber-ink">
-                {b.text}
+                <Cite text={b.text} />
               </p>
             );
           case "steps":
@@ -122,8 +143,51 @@ export function ArticleBody({ blocks, numbers }: { blocks: Block[]; numbers: Rec
                   <li key={j}>
                     <label className="flex cursor-pointer items-start gap-3 text-sm">
                       <input type="checkbox" className="mt-1 h-4 w-4 accent-navy" />
-                      <span>{t}</span>
+                      <span>
+                        <Cite text={t} />
+                      </span>
                     </label>
+                  </li>
+                ))}
+              </ul>
+            );
+          case "list":
+            return (
+              <ul key={i} className="prose-ja list-disc space-y-1.5 pl-6 leading-[1.8] marker:text-navy">
+                {b.items.map((t, j) => (
+                  <li key={j}>
+                    <Cite text={t} />
+                  </li>
+                ))}
+              </ul>
+            );
+          case "table":
+            return (
+              <div key={i} className="overflow-x-auto rounded-2xl border border-slate-100 bg-white shadow-sm">
+                <table className="w-full text-sm">
+                  <tbody>
+                    {b.rows.map(([k, v], j) => (
+                      <tr key={j} className="border-b border-line last:border-0">
+                        <th scope="row" className="w-24 whitespace-nowrap bg-slate-50 px-4 py-3 text-left align-top font-bold md:w-32">
+                          {k}
+                        </th>
+                        <td className="px-4 py-3 leading-relaxed">
+                          <Cite text={v} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          case "links":
+            return (
+              <ul key={i} className="space-y-2">
+                {b.items.map((l, j) => (
+                  <li key={j}>
+                    <a href={l.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 font-medium text-navy underline underline-offset-2">
+                      {l.text} <ExternalLink size={14} aria-hidden="true" />
+                    </a>
                   </li>
                 ))}
               </ul>

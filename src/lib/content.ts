@@ -1,6 +1,6 @@
 import { articles } from "@/data/articles";
 import { categories } from "@/data/categories";
-import type { Article, Category, CategoryId, Section } from "@/data/types";
+import type { Article, Category, CategoryId, Section, ReviewInterval } from "@/data/types";
 
 export const articleUrl = (a: Article) => `/ja/${a.category}/${a.slug}/`;
 // カテゴリページは作らない方針のため、リンク先は「#」
@@ -78,6 +78,17 @@ export function panelPills(c: Category): { name: string; href: string }[] {
 
 export const dateOrPlaceholder = (d: string) => d || "［日付］";
 
+export const intervalLabel: Record<ReviewInterval, string> = { "3m": "3か月ごと", "6m": "6か月ごと", "12m": "12か月ごと" };
+
+/** 次の見直し予定日（YYYY-MM-DD）。最終確認日と見直しの間隔から計算する。どちらかがなければ空 */
+export function nextReview(a: Article): string {
+  if (!a.lastChecked || !a.reviewInterval) return "";
+  const [y, m, d] = a.lastChecked.split("-").map(Number);
+  const months = Number(a.reviewInterval.replace("m", ""));
+  const t = new Date(Date.UTC(y, m - 1 + months, d));
+  return t.toISOString().slice(0, 10);
+}
+
 /** 検索用：記事のタイトル・中カテゴリ・導入文・本文をつないだ文字列（カテゴリ名は入れない。「面接」でカテゴリ全体が出てしまうため） */
 export function searchText(a: Article): string {
   const parts: string[] = [a.title, sectionOf(a)?.name ?? "", a.lead ?? ""];
@@ -86,9 +97,10 @@ export function searchText(a: Article): string {
     if (b.type === "example") parts.push(b.title);
     if (b.type === "steps") b.items.forEach((i) => parts.push(i.title, i.text));
     if (b.type === "ngok") b.pairs.forEach((p) => parts.push(p.ng, p.ok));
-    if (b.type === "checklist") parts.push(...b.items);
+    if (b.type === "checklist" || b.type === "list") parts.push(...b.items);
+    if (b.type === "table") b.rows.forEach(([k, v]) => parts.push(k, v));
   }
-  return parts.join(" ");
+  return parts.join(" ").replace(/\[S\d+\]/g, ""); // 出典の印 [S1] は検索の対象にしない
 }
 
 /** サイト内のすべての記事（カテゴリの並び順） */

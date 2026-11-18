@@ -26,9 +26,26 @@ export type Block =
   | { type: "steps"; items: { title: string; text: string }[] }
   | { type: "ngok"; pairs: { ng: string; ok: string }[] }
   | { type: "example"; title: string; text: string }
-  | { type: "checklist"; items: string[] };
+  | { type: "checklist"; items: string[] }
+  | { type: "list"; items: string[] } // 箇条書き
+  | { type: "table"; rows: [string, string][] } // 2列の表（項目｜内容）
+  | { type: "links"; items: { text: string; url: string }[] }; // 外部リンクの一覧
 
-export type Source = { id: string; title: string; publisher: string; url: string; checked: string };
+// 本文の中で [S1] と書くと、出典一覧の S1 への小さなリンクになる
+
+// 出典（記事を作るときに登録する）
+export type Source = {
+  id: string; // S1, S2 …（本文の [S1] と対応）
+  title: string; // ページ名
+  publisher: string; // 発行元
+  url: string;
+  supports: string; // この出典で裏付けている内容
+  aiOpened: string; // AI がページを開いて内容を照らし合わせた日（YYYY-MM-DD）
+  checked: string; // 人が開いて確かめた日。人だけが入れる（未確認は空）
+};
+
+// 見直しの間隔：日程・締切・条件・お金＝3m、制度・試験の形式＝6m、書き方などのノウハウ＝12m
+export type ReviewInterval = "3m" | "6m" | "12m";
 
 export type Article = {
   slug: string;
@@ -37,7 +54,9 @@ export type Article = {
   lead?: string; // 導入文
   popular?: number; // よく読まれている記事の順番（小さいほど上）
   related?: string[]; // 関連記事（手で指定。なければ自動）
-  lastChecked: string; // 最終確認日（未確認は空）
+  lastChecked: string; // 最終確認日＝人が記事全体を確かめた日。人だけが入れる（未確認は空）
+  checkedBy?: string[]; // 確認した人の名前。人だけが入れる
+  reviewInterval?: ReviewInterval; // 見直しの間隔。次の見直し予定日は最終確認日＋間隔で計算する（保存しない）
   updated: string; // 更新日（未確認は空）
   origin?: string; // Ryugaku Wiki のページ名
   sources: Source[];
