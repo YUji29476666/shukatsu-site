@@ -64,6 +64,47 @@ export default async function ArticlePage({ params }: { params: Params }) {
   const reportHref = `${site.reportFormUrl}`;
   const fallback = { name: c.name, href: categoryUrl(c.id) };
 
+  // 右のサイドバー（人気記事・カテゴリー）。PC は本文の横、スマホは「準備中」／本文のすぐ下に出す
+  const sideCards = (
+    <>
+      <section aria-labelledby="side-pop" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+        <h2 id="side-pop" className="font-bold">
+          人気記事
+        </h2>
+        <ol className="mt-4 space-y-4">
+          {popularArticles(5).map((p, i) => (
+            <li key={p.slug}>
+              <a href={articleUrl(p)} className="group flex items-center gap-3">
+                <div className="relative aspect-[4/3] w-20 shrink-0">
+                  <Photo id={p.slug} category={p.category} rounded="rounded-lg" small />
+                  <span className="absolute left-0 top-0 grid h-6 w-6 place-items-center rounded-br-lg rounded-tl-lg bg-navy text-xs font-bold text-white">{i + 1}</span>
+                </div>
+                <span className="min-w-0">
+                  <span className="block text-sm font-bold leading-snug group-hover:text-navy">{p.title}</span>
+                  <span className="text-[11px] text-sub">最終確認日：{dateOrPlaceholder(p.lastChecked)}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <section aria-labelledby="side-cat" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+        <h2 id="side-cat" className="font-bold">
+          カテゴリー
+        </h2>
+        <ul className="mt-3 divide-y divide-line text-sm">
+          {categories.map((x) => (
+            <li key={x.id}>
+              <a href={categoryUrl(x.id)} className={`flex min-h-11 items-center justify-between hover:text-orange ${x.id === c.id ? "font-bold" : ""}`}>
+                {x.name} <ArrowRight size={14} aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
+  );
+
   return (
     <div className="mx-auto max-w-6xl px-5">
       <Breadcrumb
@@ -73,7 +114,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
           { name: a.title },
         ]}
       />
-      <div className="grid gap-10 pb-10 lg:grid-cols-[1fr_300px]">
+      <div className="grid gap-10 pb-10 md:grid-cols-[minmax(0,1fr)_260px] lg:grid-cols-[minmax(0,1fr)_300px]">
         <article className="min-w-0">
           <header>
             <div className="flex items-start gap-4">
@@ -113,6 +154,8 @@ export default async function ArticlePage({ params }: { params: Params }) {
           ) : (
             <p className="mt-8 rounded-2xl border border-dashed border-line bg-white p-8 text-center text-sub">この記事は準備中です。</p>
           )}
+
+          <div className="mt-8 space-y-6 md:hidden">{sideCards}</div>
 
           <section aria-label="出典" className="mt-10 rounded-2xl bg-slate-100/70 p-5 text-sm">
             <p className="font-bold">出典</p>
@@ -166,44 +209,10 @@ export default async function ArticlePage({ params }: { params: Params }) {
           </section>
         </article>
 
-        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-          <section aria-labelledby="side-pop" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-            <h2 id="side-pop" className="font-bold">
-              人気記事
-            </h2>
-            <ol className="mt-4 space-y-4">
-              {popularArticles(5).map((p, i) => (
-                <li key={p.slug}>
-                  <a href={articleUrl(p)} className="group flex items-center gap-3">
-                    <div className="relative aspect-[4/3] w-20 shrink-0">
-                      <Photo id={p.slug} category={p.category} rounded="rounded-lg" small />
-                      <span className="absolute left-0 top-0 grid h-6 w-6 place-items-center rounded-br-lg rounded-tl-lg bg-navy text-xs font-bold text-white">{i + 1}</span>
-                    </div>
-                    <span className="min-w-0">
-                      <span className="block text-sm font-bold leading-snug group-hover:text-navy">{p.title}</span>
-                      <span className="text-[11px] text-sub">最終確認日：{dateOrPlaceholder(p.lastChecked)}</span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </section>
-          <section aria-labelledby="side-cat" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-            <h2 id="side-cat" className="font-bold">
-              カテゴリー
-            </h2>
-            <ul className="mt-3 divide-y divide-line text-sm">
-              {categories.map((x) => (
-                <li key={x.id}>
-                  <a href={categoryUrl(x.id)} className={`flex min-h-11 items-center justify-between hover:text-orange ${x.id === c.id ? "font-bold" : ""}`}>
-                    {x.name} <ArrowRight size={14} aria-hidden="true" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
+        <aside className="hidden space-y-6 md:sticky md:top-24 md:block md:self-start">
+          {sideCards}
           {toc.length > 0 && (
-            <div className="hidden lg:block">
+            <div className="hidden md:block">
               <Toc toc={toc} />
             </div>
           )}
