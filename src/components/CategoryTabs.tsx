@@ -1,6 +1,6 @@
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { categories } from "@/data/categories";
-import { articleUrl, categoryUrl, dateOrPlaceholder, getCategory, panelArticles, panelPills, sectionOf } from "@/lib/content";
+import { articleUrl, categoryUrl, dateOrPlaceholder, panelArticles } from "@/lib/content";
 import { Photo } from "./Photo";
 import { labelColor } from "./ArticleCard";
 
@@ -91,14 +91,6 @@ export function CategoryTabs() {
             hidden={i !== 0}
             className="rounded-3xl bg-beige p-5 md:rounded-l-none md:p-8"
           >
-            <div className="flex flex-wrap items-center gap-2 border-b border-[#e5d9c8] pb-5">
-                            {!c.features && <span className="mr-1 text-xs font-bold text-orange">{c.tagline}</span>}
-              {panelPills(c).map((p) => (
-                <a key={p.name} href={p.href} className="rounded-full bg-white px-3 py-1 text-xs text-ink shadow-sm hover:text-orange">
-                  {p.name}
-                </a>
-              ))}
-            </div>
             <ul>
               {panelArticles(c).map((a) => (
                 <li key={a.slug} className="border-b border-dashed border-[#dccbb5] last:border-0">
@@ -110,8 +102,8 @@ export function CategoryTabs() {
                       <p className="text-xs text-sub">最終確認日：{dateOrPlaceholder(a.lastChecked)}</p>
                       <p className="mt-0.5 text-base font-bold leading-snug group-hover:text-navy md:text-lg">{a.title}</p>
                       <p className="mt-2 flex flex-wrap gap-1.5">
-                        <span className={`rounded px-2 py-0.5 text-[11px] font-bold ${labelColor[a.category]}`}>{getCategory(a.category)?.name}</span>
-                        <span className="rounded border border-[#e5d9c8] bg-white px-2 py-0.5 text-[11px] text-sub">{sectionOf(a)?.name}</span>
+                        <span className={`rounded px-2 py-0.5 text-[11px] font-bold ${labelColor[c.id]}`}>{c.name}</span>
+                        <span className="rounded border border-[#e5d9c8] bg-white px-2 py-0.5 text-[11px] text-sub">{a.title}</span>
                       </p>
                     </div>
                   </a>

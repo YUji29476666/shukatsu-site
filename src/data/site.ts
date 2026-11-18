@@ -18,15 +18,11 @@ export const events = {
     cta: "イベント情報を見る",
     url: "#", // グロキャリのイベントページの URL（未定）
   },
-  forums: [
-    { name: "ボストン（ボスキャリ）", slug: "boston-career-forum" },
-    { name: "ロンドン", slug: "london-career-forum" },
-    { name: "ロサンゼルス", slug: "los-angeles-career-forum" },
-    { name: "TKF", slug: "tkf-global-talent-expo" },
-    { name: "国内開催", slug: "domestic-career-forums" },
-  ],
 };
 
 // 写真：Unsplash から選んで public/images/ に置いたら、ここに記録する
 // （撮影者名と元 URL。まだ写真がないあいだは、カテゴリの色の「写真（仮）」を表示する）
 export const photos: Record<string, { src: string; credit: string; url: string }> = {};
+
+// よく読まれている記事：どの記事を出すかは後で決める（推測で選ばない）。今は空きの枠を6つ表示する
+export const popularSlots = 6;

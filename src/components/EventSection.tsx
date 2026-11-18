@@ -1,8 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { events } from "@/data/site";
-import { articleUrl, mustArticle } from "@/lib/content";
 
-// イベント：グロキャリのイベントは外部ページへ、フォーラムはこのサイトの記事へ（日付は載せない）
+// イベント：グロキャリのイベントのバナー（リンク先は後で決める。日付は載せない）
 export function EventSection() {
   const b = events.banner;
   const external = b.url.startsWith("http");
@@ -26,16 +25,6 @@ export function EventSection() {
           {external && <span className="sr-only">（外部サイトが新しいタブで開きます）</span>}
         </a>
       </div>
-      <p className="mt-8 text-sm font-bold">キャリアフォーラムの情報</p>
-      <ul className="mt-3 flex flex-wrap gap-2">
-        {events.forums.map((f) => (
-          <li key={f.slug}>
-            <a href={articleUrl(mustArticle(f.slug))} className="inline-flex min-h-11 items-center rounded-full border border-line bg-white px-4 text-sm hover:border-navy hover:text-navy">
-              {f.name}
-            </a>
-          </li>
-        ))}
-      </ul>
     </section>
   );
 }
