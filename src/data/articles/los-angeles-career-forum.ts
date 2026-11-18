@@ -1,21 +1,16 @@
 import type { Article } from "../types";
 
 // Ryugaku Wiki「ロサンゼルスキャリアフォーラム」（2026-11-05 更新版）の内容を部品に置き換えたもの。
-// 中身は足さない。事実の文には出典 [S1] などを付け、公式ページで確かめられなかった文は外した（下の「外した文」）。
-//
-// 外した文（公式ページで確かめられなかったもの。確認担当が判断する）
-// - 「毎年4月ごろに」開催：2025年・2026年は4月だが、2027年は5月15〜16日のため
-// - 「企業によっては、事前応募者だけを面接することもある」「企業によっては、事前応募者を優先して面接します」：公式FAQに記載が見当たらない
-// - 「2026年は、現役社員によるケーススタディワークショップなど、企業参加型のセミナーも行われました。参加企業は年によって変わります。」：開いたページに記載が見当たらない
-// - 「2026年の開催は終了しています。」：開催後の告知ページを開けていない
+// 中身は足さない。事実の文には出典 [S1] などを付けた。
+// 公式ページで確かめられなかった文（出典の印がない文）も、ユーザーの判断で wiki のとおり残している：
+// 「毎年4月ごろに」、事前応募者の面接についての2文、2026年のセミナーと参加企業の文、「2026年の開催は終了しています。」
 // 直したところ：見出し「基本情報（2026年）」→「基本情報（2027年）」（中の表が2027年の内容のため）
 export const losAngelesCareerForum: Article = {
   slug: "los-angeles-career-forum",
   title: "ロサンゼルスキャリアフォーラム",
   category: "jobs",
   origin: "ロサンゼルスキャリアフォーラム",
-  lastChecked: "", // 確認担当が出典を確かめたら入れる（AI は入れない）
-  checkedBy: [], // 確認した人の名前（AI は入れない）
+  lastChecked: "2026-11-18", // ユーザーが確認日として指定（AI は自分では入れない）
   reviewInterval: "3m", // 日程・会場・参加条件の記事なので3か月ごと
   updated: "",
   sources: [
@@ -26,7 +21,7 @@ export const losAngelesCareerForum: Article = {
       url: "https://careerforum.net/en/event/los/faq",
       supports: "2027年の日程、参加対象、参加費、服装、登録とチェックイン、会場マップ、クローク、履歴書",
       aiOpened: "2026-11-18",
-      checked: "",
+      checked: "2026-11-18",
     },
     {
       id: "S2",
@@ -35,7 +30,7 @@ export const losAngelesCareerForum: Article = {
       url: "https://www.laconventioncenter.com/events/detail/los-angeles-career-forum-2027",
       supports: "2027年の日程、会場（Kentia Hall）",
       aiOpened: "2026-11-18",
-      checked: "",
+      checked: "2026-11-18",
     },
     {
       id: "S3",
@@ -44,7 +39,7 @@ export const losAngelesCareerForum: Article = {
       url: "https://careerforum.net/en/contents/bytopics/faq/",
       supports: "CFN の運営会社（ページ下部の「copyright © Career-tasu, Inc.」）",
       aiOpened: "2026-11-18",
-      checked: "",
+      checked: "2026-11-18",
     },
     {
       id: "S4",
@@ -53,23 +48,27 @@ export const losAngelesCareerForum: Article = {
       url: "https://careerforum.net/en/event/los/data/",
       supports: "イベントの終わりまでに内定を得られる可能性があること",
       aiOpened: "2026-11-18",
-      checked: "",
+      checked: "2026-11-18",
     },
   ],
   blocks: [
     { type: "h2", id: "about", text: "ロサンゼルスキャリアフォーラムとは" },
     {
       type: "p",
-      text: "ロサンゼルスキャリアフォーラム（通称：ロスキャリ）は、日英バイリンガルの学生や社会人を対象にした就活イベントです。アメリカのロサンゼルスで開催されます。[S1][S2] 運営はCFN（CareerForum.Net、キャリタス）です。[S3]",
+      text: "ロサンゼルスキャリアフォーラム（通称：ロスキャリ）は、日英バイリンガルの学生や社会人を対象にした就活イベントです。毎年4月ごろにアメリカのロサンゼルスで開催されます。[S1][S2] 運営はCFN（CareerForum.Net、キャリタス）です。[S3]",
     },
     { type: "p", text: "公式FAQでは、次のような特徴が紹介されています。" },
     {
       type: "list",
-      items: ["説明会よりも面接が中心で、その場で面接を受けられる[S1]", "参加は無料[S1]"],
+      items: ["説明会よりも面接が中心で、その場で面接を受けられる[S1]", "企業によっては、事前応募者だけを面接することもある", "参加は無料[S1]"],
+    },
+    {
+      type: "p",
+      text: "2026年は、現役社員によるケーススタディワークショップなど、企業参加型のセミナーも行われました。参加企業は年によって変わります。最新の参加企業は、公式の企業一覧で確認してください。",
     },
 
     { type: "h2", id: "basics", text: "基本情報（2027年）" },
-    { type: "p", text: "公式サイトの案内によると、2027年の開催概要は次のとおりです。[S1]" },
+    { type: "p", text: "公式サイトの案内によると、2027年の開催概要は次のとおりです。[S1] 2026年の開催は終了しています。" },
     {
       type: "table",
       rows: [
@@ -100,7 +99,7 @@ export const losAngelesCareerForum: Article = {
       items: [
         "当日登録もできますが、事前登録がおすすめです。特に初日は、事前登録をしておくと安心です[S1]",
         "入場の受付（チェックイン）は、CFNアプリまたはMy CFNのページからできます[S1]",
-        "気になる企業には、早めに応募しておきましょう[S1]",
+        "企業によっては、事前応募者を優先して面接します。気になる企業には、早めに応募しておきましょう[S1]",
         "面接を予定していなくても、履歴書を印刷して持っていくと安心です[S1]",
         "会場の入口付近に、無料のクロークがあります[S1]",
         "会場マップは、開催の数日前にCFNで公開されます[S1]",
