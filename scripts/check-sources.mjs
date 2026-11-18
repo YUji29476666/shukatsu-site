@@ -62,7 +62,12 @@ async function fetchSource(url) {
     const res = await fetch(url, {
       redirect: "follow",
       signal: AbortSignal.timeout(30000),
-      headers: { "user-agent": "Mozilla/5.0 (compatible; shukatsu-site-source-check/1.0)", "accept-language": "ja,en;q=0.8" },
+      headers: {
+        // 一般的なブラウザと同じ形で頼む（自動の読み込みを断るサイトがあるため）
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "accept-language": "ja,en;q=0.8",
+      },
     });
     const html = await res.text();
     return { status: res.status, finalUrl: res.url, text: pageText(html) };
