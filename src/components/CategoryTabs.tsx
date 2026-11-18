@@ -1,10 +1,10 @@
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { categories } from "@/data/categories";
-import { articleUrl, categoryUrl, dateOrPlaceholder, panelArticles } from "@/lib/content";
+import { articleUrl, dateOrPlaceholder, panelArticles } from "@/lib/content";
 import { Photo } from "./Photo";
 import { labelColor } from "./ArticleCard";
 
-// 「カテゴリから探す」：タブで記事一覧が切り替わる
+// 「カテゴリから探す」：タブで記事一覧が切り替わる。各パネルは先頭の4件を見せ、「もっと見る」で残りを開く
 // 全カテゴリのパネルを HTML に出し、小さなスクリプトで表示を切り替える（JS が動かなくても最初のカテゴリは見える）
 const script = `
 (() => {
@@ -25,6 +25,17 @@ const script = `
   document.addEventListener('click', (e) => {
     const t = e.target.closest && e.target.closest('#cat-tabs [role="tab"]');
     if (t) show(tabs().indexOf(t));
+    const b = e.target.closest && e.target.closest('#cat-tabs [data-more-btn]');
+    if (b) {
+      const cat = b.dataset.moreBtn;
+      const open = b.getAttribute('aria-expanded') !== 'true';
+      document.querySelectorAll('#panel-' + cat + ' [data-extra]').forEach((li) => (li.hidden = !open));
+      document.querySelectorAll('#cat-tabs [data-more-btn="' + cat + '"]').forEach((x) => {
+        x.setAttribute('aria-expanded', open ? 'true' : 'false');
+        x.querySelector('[data-label]').textContent = open ? '閉じる' : x.dataset.label;
+        x.querySelector('[data-icon]').style.transform = open ? 'rotate(180deg)' : '';
+      });
+    }
   });
   document.addEventListener('keydown', (e) => {
     const t = e.target.closest && e.target.closest('#cat-tabs [role="tab"]');
@@ -40,13 +51,34 @@ const script = `
 })();
 `;
 
+const LIMIT = 4; // パネルに最初に見せる記事の数
+
+function MoreButton({ id, name, className }: { id: string; name: string; className: string }) {
+  const label = `${name}の記事をもっと見る`;
+  return (
+    <button
+      type="button"
+      data-more-btn={id}
+      data-label={label}
+      aria-expanded="false"
+      aria-controls={`panel-${id}`}
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-navy font-medium text-navy hover:bg-navy hover:text-white ${className}`}
+    >
+      <span data-label>{label}</span>
+      <span data-icon className="inline-flex transition-transform">
+        <ChevronDown size={16} aria-hidden="true" />
+      </span>
+    </button>
+  );
+}
+
 export function CategoryTabs() {
   return (
     <section aria-labelledby="cat-h" className="mx-auto max-w-6xl px-5 py-16">
       <h2 id="cat-h" className="text-2xl font-bold tracking-tight">
         カテゴリから探す
       </h2>
-      <div id="cat-tabs" className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-0 md:grid-cols-[260px_minmax(0,1fr)]">
+      <div id="cat-tabs" className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-0 md:grid-cols-[290px_minmax(0,1fr)]">
         <div className="min-w-0">
           <div role="tablist" aria-label="カテゴリ" aria-orientation="vertical" className="no-scrollbar flex gap-2 overflow-x-auto pb-3 md:flex-col md:gap-1 md:overflow-visible md:pb-0">
             {categories.map((c, i) => (
@@ -64,22 +96,18 @@ export function CategoryTabs() {
               >
                 <span className="hidden h-1.5 w-1.5 rounded-full bg-transparent md:inline-block md:group-data-[on=1]:bg-orange" />
                 <span className="whitespace-nowrap">{c.name}</span>
-                <span className="hidden text-[10px] tracking-wider opacity-70 md:inline">— {c.en}</span>
+                <span className="hidden whitespace-nowrap text-[10px] tracking-wider opacity-70 md:inline">— {c.en}</span>
                 <ChevronRight size={16} className="ml-auto hidden md:block" aria-hidden="true" />
               </button>
             ))}
           </div>
-          {categories.map((c, i) => (
-            <a
-              key={c.id}
-              data-more={c.id}
-              hidden={i !== 0}
-              href={categoryUrl(c.id)}
-              className="mt-8 hidden w-fit items-center gap-1.5 whitespace-nowrap rounded-full border border-navy px-4 py-2.5 text-[13px] font-medium text-navy hover:bg-navy hover:text-white md:inline-flex [&[hidden]]:hidden"
-            >
-              {c.name}の記事をもっと見る <ArrowRight size={16} aria-hidden="true" />
-            </a>
-          ))}
+          {categories.map((c, i) =>
+            panelArticles(c).length > LIMIT ? (
+              <div key={c.id} data-more={c.id} hidden={i !== 0} className="mt-8 hidden md:block [&[hidden]]:hidden">
+                <MoreButton id={c.id} name={c.name} className="w-fit px-4 py-2.5 text-[13px]" />
+              </div>
+            ) : null,
+          )}
         </div>
 
         {categories.map((c, i) => (
@@ -92,8 +120,12 @@ export function CategoryTabs() {
             className="rounded-3xl bg-beige p-5 md:rounded-l-none md:p-8"
           >
             <ul>
-              {panelArticles(c).map((a) => (
-                <li key={a.slug} className="border-b border-dashed border-[#dccbb5] last:border-0">
+              {panelArticles(c).map((a, j) => (
+                <li
+                  key={a.slug}
+                  {...(j >= LIMIT ? { "data-extra": "", hidden: true } : {})}
+                  className="border-b border-dashed border-[#dccbb5] last:border-0"
+                >
                   <a href={articleUrl(a)} className="group flex items-center gap-4 py-4 md:gap-6">
                     <div className="aspect-[4/3] w-24 shrink-0 md:w-36">
                       <Photo id={a.slug} category={a.category} rounded="rounded-lg" small />
@@ -110,9 +142,11 @@ export function CategoryTabs() {
                 </li>
               ))}
             </ul>
-            <a href={categoryUrl(c.id)} className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-navy text-sm font-medium text-navy md:hidden">
-              {c.name}の記事をもっと見る <ArrowRight size={16} aria-hidden="true" />
-            </a>
+            {panelArticles(c).length > LIMIT && (
+              <div className="mt-4 md:hidden">
+                <MoreButton id={c.id} name={c.name} className="min-h-11 w-full justify-center text-sm" />
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -4,7 +4,7 @@ import type { Article } from "../types";
 export const selfPr: Article = {
   slug: "self-pr",
   title: "自己PR",
-  category: "selection",
+  category: "interview",
   origin: "自己PR",
   popular: 5,
   related: ["star-story", "self-introduction", "motivation"],

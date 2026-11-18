@@ -63,9 +63,11 @@ export function popularArticles(limit = 6): Article[] {
 
 /** トップページのパネルに出す記事（ボスキャリは「人気のページ」の紹介を優先） */
 /** 「カテゴリから探す」のパネルに出す記事。ボスキャリは features、ほかはカテゴリの並び順の先頭から */
-export function panelArticles(c: Category, limit = 4): Article[] {
-  const slugs = c.features ? c.features.articles : c.sections.flatMap((s) => s.articles);
-  return slugs.slice(0, limit).map(mustArticle);
+// 先頭の4件を最初に見せ、残りは「もっと見る」で開く。ボスキャリは features のあとに自分の記事を足す
+export function panelArticles(c: Category): Article[] {
+  const own = c.sections.flatMap((s) => s.articles);
+  const slugs = c.features ? [...new Set([...c.features.articles, ...own])] : own;
+  return slugs.map(mustArticle);
 }
 
 /** パネル上部のピル（中カテゴリ） */
