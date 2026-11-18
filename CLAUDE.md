@@ -58,6 +58,15 @@ docs/ の資料（site-design-decisions.md、CLAUDE-old.md）は前のやり方�
 - 要確認があれば GitHub に Issue「出典の自動チェック：要確認」ができる。AI は使わない（費用なし）
 - Issue が来たら、ユーザーが Claude に「この記事を確認して」と頼む → Claude が変わった所と記事を照らし合わせて修正案を出す → 見本 → OK で公開。変更がなければ、ユーザーが確認日を伝えて最終確認日を更新する
 
+## 記事の評価ボタン
+- 本文がある記事の最後に「この記事は役に立ちましたか？」と「役に立った／役に立たなかった」を出す（src/components/RatingButtons.tsx）。理由は聞かない（ユーザーの指示）
+- 押すと `functions/api/rate.js`（Cloudflare Pages Functions）が、Cloudflare D1 に記事ごとの数だけを足す。個人情報・Cookie は使わない。同じブラウザで2回押せないよう、押したことはそのブラウザにだけ覚える
+- D1 は Cloudflare の画面でユーザーが作り、Pages の設定で「DB」という名前でつなぐ（本番・プレビュー両方）。つないでいないと「送信できませんでした」と出る
+- 数の見方：Cloudflare の D1 の画面で `SELECT * FROM ratings ORDER BY down DESC;`
+
+## 出典チェックの Slack 通知（仮置き）
+- 要確認があるとき、Issue に加えて Slack にも件数と Issue のリンクを送る。GitHub の Secrets に `SLACK_WEBHOOK_URL` があるときだけ送る（ユーザーが登録する。Claude は URL を扱わない）
+
 ## 写真
 - Unsplash の無料写真（Unsplash License。Unsplash+ は使わない）を、images.unsplash.com から直接表示する。src/data/site.ts の photos に、写真の URL・撮影者・写真ページの URL を記録する
 - 写真が決まっていない枠は、灰色の「写真（仮）」のまま。AI 生成画像は使わない

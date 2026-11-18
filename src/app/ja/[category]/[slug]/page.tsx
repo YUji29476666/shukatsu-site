@@ -5,6 +5,7 @@ import { ArticleBody, buildToc, Toc } from "@/components/ArticleBody";
 import { ArticleCard, labelColor } from "@/components/ArticleCard";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Photo } from "@/components/Photo";
+import { RatingButtons } from "@/components/RatingButtons";
 import { articles } from "@/data/articles";
 import { categories } from "@/data/categories";
 import { site } from "@/data/site";
@@ -159,6 +160,9 @@ export default async function ArticlePage({ params }: { params: Params }) {
           ) : (
             <p className="mt-8 rounded-2xl border border-dashed border-line bg-white p-8 text-center text-sub">この記事は準備中です。</p>
           )}
+
+          {/* 評価ボタン：本文がある記事だけ。票は Cloudflare（functions/api/rate.js → D1）に数だけ残る */}
+          {a.blocks && <RatingButtons slug={a.slug} />}
 
           <div className="mt-8 space-y-6 md:hidden">{sideCards}</div>
 
