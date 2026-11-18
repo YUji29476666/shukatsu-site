@@ -4,8 +4,22 @@ import { defaultReviewInterval } from "@/data/review";
 import type { Article, Category, CategoryId, Section, ReviewInterval } from "@/data/types";
 
 export const articleUrl = (a: Article) => `/ja/${a.category}/${a.slug}/`;
-// カテゴリページは作らない方針のため、リンク先は「#」
-export const categoryUrl = (_id: CategoryId) => "#";
+export const categoryUrl = (id: CategoryId) => `/ja/${id}/`;
+/** 中の分け方のリンク先。sectionPages のカテゴリは分け方ごとの記事一覧ページ、ほかはカテゴリページの中の見出し */
+export function sectionUrl(c: Category, s: Section): string {
+  if (c.sectionPages) return `/ja/${c.id}/${s.id}/`;
+  return c.sections.length > 1 ? `${categoryUrl(c.id)}#${s.id}` : categoryUrl(c.id);
+}
+
+/** 記事一覧ページを作る分け方（sectionPages のカテゴリだけ）。記事の slug と URL が重なったら止める */
+export function sectionPages(): { c: Category; s: Section }[] {
+  const out = categories.filter((c) => c.sectionPages).flatMap((c) => c.sections.map((s) => ({ c, s })));
+  for (const { c, s } of out) {
+    if (articles.some((a) => a.category === c.id && a.slug === s.id)) throw new Error(`分け方の id「${s.id}」が記事の slug と同じです（src/data/categories.ts）`);
+  }
+  return out;
+}
+
 
 export function getCategory(id: string): Category | undefined {
   return categories.find((c) => c.id === id);

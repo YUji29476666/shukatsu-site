@@ -6,6 +6,8 @@ import { ArticleCard, labelColor } from "@/components/ArticleCard";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Photo } from "@/components/Photo";
 import { RatingButtons } from "@/components/RatingButtons";
+import { ArticleRows, ListLayout } from "@/components/ListLayout";
+import { SectionIcon } from "@/components/SectionIcon";
 import { articles } from "@/data/articles";
 import { categories } from "@/data/categories";
 import { site } from "@/data/site";
@@ -18,20 +20,31 @@ import {
   getCategory,
   popularArticles,
   prevNext,
+  mustArticle,
   relatedOf,
   sectionOf,
+  sectionPages,
+  sectionUrl,
 } from "@/lib/content";
 
 export const dynamicParams = false;
+// この URL（/ja/{カテゴリ}/{xxx}/）は、記事ページと「分け方ごとの記事一覧ページ」の両方に使う
 export function generateStaticParams() {
-  return articles.map((a) => ({ category: a.category, slug: a.slug }));
+  return [
+    ...articles.map((a) => ({ category: a.category, slug: a.slug })),
+    ...sectionPages().map(({ c, s }) => ({ category: c.id, slug: s.id })),
+  ];
 }
+
+const findSection = (category: string, slug: string) => sectionPages().find(({ c, s }) => c.id === category && s.id === slug);
 
 type Params = Promise<{ category: string; slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const a = getArticle((await params).slug);
-  return { title: a?.title };
+  const { category, slug } = await params;
+  const sp = findSection(category, slug);
+  if (sp) return { title: `${sp.s.name}の記事一覧` };
+  return { title: getArticle(slug)?.title };
 }
 
 function PrevNextCard({ a, dir, fallback }: { a?: Article; dir: "prev" | "next"; fallback: { name: string; href: string } }) {
@@ -55,6 +68,19 @@ function PrevNextCard({ a, dir, fallback }: { a?: Article; dir: "prev" | "next";
 
 export default async function ArticlePage({ params }: { params: Params }) {
   const { category, slug } = await params;
+  const sp = findSection(category, slug);
+  if (sp) {
+    return (
+      <ListLayout
+        crumbs={[{ name: sp.c.name, href: categoryUrl(sp.c.id) }, { name: sp.s.name }]}
+        title={`${sp.s.name}の記事一覧`}
+        count={sp.s.articles.length}
+        icon={<SectionIcon name={sp.s.icon} size={28} />}
+      >
+        <ArticleRows items={sp.s.articles.map(mustArticle)} />
+      </ListLayout>
+    );
+  }
   const a = getArticle(slug);
   if (!a || a.category !== category) notFound();
   const c = getCategory(a.category)!;
@@ -111,7 +137,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
       <Breadcrumb
         items={[
           { name: c.name, href: categoryUrl(c.id) },
-          ...(section && c.sections.length > 1 ? [{ name: section.name, href: "#" }] : []),
+          ...(section && c.sections.length > 1 ? [{ name: section.name, href: sectionUrl(c, section) }] : []),
           { name: a.title },
         ]}
       />
@@ -130,7 +156,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
                 {c.name}
               </a>
               {section && c.sections.length > 1 && (
-                <a href={"#"} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-ink">
+                <a href={sectionUrl(c, section)} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-ink">
                   {section.name}
                 </a>
               )}

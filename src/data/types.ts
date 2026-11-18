@@ -2,9 +2,12 @@
 
 export type CategoryId = "bosscari" | "timeline" | "jobs" | "selection";
 
+export type SectionIcon = "plane" | "calendar" | "smartphone" | "users" | "file" | "message";
+
 export type Section = {
-  id: string; // カテゴリページ内の見出しのアンカー（#id）
+  id: string; // 記事一覧ページの URL（/ja/{カテゴリ}/{id}/）。記事の slug と重ねない
   name: string; // 中カテゴリ名
+  icon: SectionIcon; // 一覧で名前の横に出すアイコン（src/components/SectionIcon.tsx）
   articles: string[]; // 記事の slug。この並び順が「前の記事／次の記事」の順番
 };
 
@@ -14,6 +17,7 @@ export type Category = {
   en: string; // タブの横の小さな英字
   tagline: string; // ひとこと
   sections: Section[]; // このカテゴリがホームの記事
+  sectionPages?: boolean; // true：中の分け方をそれぞれ1つのカテゴリとして扱い、記事一覧ページ（/ja/{カテゴリ}/{id}/）を作る（今は応募・面接だけ。ユーザーの指示）
   features?: { name: string; articles: string[] }; // ほかのカテゴリの記事の「紹介」（前後の順番には入れない）
 };
 

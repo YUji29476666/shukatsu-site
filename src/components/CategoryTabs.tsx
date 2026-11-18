@@ -54,21 +54,14 @@ const script = `
 const LIMIT = 4; // パネルに最初に見せる記事の数
 
 function MoreButton({ id, name, className }: { id: string; name: string; className: string }) {
-  const label = `${name}の記事をもっと見る`;
   return (
-    <button
-      type="button"
-      data-more-btn={id}
-      data-label={label}
-      aria-expanded="false"
-      aria-controls={`panel-${id}`}
+    <a
+      href={`/ja/${id}/`}
       className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-navy font-medium text-navy hover:bg-navy hover:text-white ${className}`}
     >
-      <span data-label>{label}</span>
-      <span data-icon className="inline-flex transition-transform">
-        <ChevronDown size={16} aria-hidden="true" />
-      </span>
-    </button>
+      {name}の記事をもっと見る
+      <ChevronRight size={16} aria-hidden="true" />
+    </a>
   );
 }
 
@@ -120,10 +113,9 @@ export function CategoryTabs() {
             className="rounded-3xl bg-beige p-5 md:rounded-l-none md:p-8"
           >
             <ul>
-              {panelArticles(c).map((a, j) => (
+              {panelArticles(c).slice(0, LIMIT).map((a) => (
                 <li
                   key={a.slug}
-                  {...(j >= LIMIT ? { "data-extra": "", hidden: true } : {})}
                   className="border-b border-dashed border-[#dccbb5] last:border-0"
                 >
                   <a href={articleUrl(a)} className="group flex items-center gap-4 py-4 md:gap-6">
