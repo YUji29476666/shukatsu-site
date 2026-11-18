@@ -69,7 +69,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
       <Breadcrumb
         items={[
           { name: c.name, href: categoryUrl(c.id) },
-          ...(section && c.sections.length > 1 ? [{ name: section.name, href: `${categoryUrl(c.id)}#${section.id}` }] : []),
+          ...(section && c.sections.length > 1 ? [{ name: section.name, href: "#" }] : []),
           { name: a.title },
         ]}
       />
@@ -88,7 +88,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
                 {c.name}
               </a>
               {section && c.sections.length > 1 && (
-                <a href={`${categoryUrl(c.id)}#${section.id}`} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-ink">
+                <a href={"#"} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-ink">
                   {section.name}
                 </a>
               )}

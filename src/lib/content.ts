@@ -3,7 +3,8 @@ import { categories } from "@/data/categories";
 import type { Article, Category, CategoryId, Section } from "@/data/types";
 
 export const articleUrl = (a: Article) => `/ja/${a.category}/${a.slug}/`;
-export const categoryUrl = (id: CategoryId) => `/ja/${id}/`;
+// カテゴリページは作らない方針のため、リンク先は「#」
+export const categoryUrl = (_id: CategoryId) => "#";
 
 export function getCategory(id: string): Category | undefined {
   return categories.find((c) => c.id === id);
@@ -68,8 +69,8 @@ export function panelArticles(c: Category, limit = 4): Article[] {
 
 /** パネル上部のピル（中カテゴリ） */
 export function panelPills(c: Category): { name: string; href: string }[] {
-  if (c.features) return [{ name: c.features.name, href: `${categoryUrl(c.id)}#popular` }];
-  return c.sections.map((s) => ({ name: s.name, href: `${categoryUrl(c.id)}#${s.id}` }));
+  if (c.features) return [{ name: c.features.name, href: "#" }];
+  return c.sections.map((s) => ({ name: s.name, href: "#" }));
 }
 
 export const dateOrPlaceholder = (d: string) => d || "［日付］";
