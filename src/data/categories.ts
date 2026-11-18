@@ -40,30 +40,17 @@ export const categories: Category[] = [
       },
     ],
   },
-  // もとの「応募・面接」を、ユーザーの指示で5つのカテゴリに分けた
   {
-    id: "application",
-    name: "応募準備",
-    en: "APPLY",
-    tagline: "",
-    sections: [{ id: "application", name: "応募準備", articles: ["application-prep", "self-analysis", "entry-sheet", "resume"] }],
-  },
-  {
-    id: "tests",
-    name: "選考試験対策",
-    en: "TESTS",
-    tagline: "",
-    sections: [{ id: "tests", name: "選考試験対策", articles: ["selection-tests", "spi", "tamatebako", "tg-web", "coding-test"] }],
-  },
-  {
-    id: "interview",
-    name: "面接対策",
+    id: "selection",
+    name: "応募・面接",
     en: "INTERVIEW",
-    tagline: "",
+    tagline: "ES・SPI・面接、不安を解消",
     sections: [
+      { id: "application", name: "応募準備", articles: ["application-prep", "self-analysis", "entry-sheet", "resume"] },
+      { id: "tests", name: "選考試験対策", articles: ["selection-tests", "spi", "tamatebako", "tg-web", "coding-test"] },
       {
-        id: "interview",
-        name: "面接対策",
+        id: "questions",
+        name: "質問対策",
         articles: [
           "interview-prep",
           "star-story",
@@ -78,20 +65,8 @@ export const categories: Category[] = [
           "technical-interview",
         ],
       },
+      { id: "manners", name: "マナー・服装", articles: ["manners"] },
+      { id: "final-check", name: "直前・当日リマインド", articles: ["final-check"] },
     ],
-  },
-  {
-    id: "manners",
-    name: "マナー・服装",
-    en: "MANNERS",
-    tagline: "",
-    sections: [{ id: "manners", name: "マナー・服装", articles: ["manners"] }],
-  },
-  {
-    id: "final-check",
-    name: "直前・当日リマインド",
-    en: "REMINDER",
-    tagline: "",
-    sections: [{ id: "final-check", name: "直前・当日リマインド", articles: ["final-check"] }],
   },
 ];

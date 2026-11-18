@@ -1,4 +1,4 @@
-import { AlarmClock, Briefcase, Building2, CalendarClock, ClipboardList, FileText, ImageIcon, MessagesSquare, Shirt } from "lucide-react";
+import { Briefcase, Building2, CalendarClock, ImageIcon, MessagesSquare } from "lucide-react";
 import { photos } from "@/data/site";
 import type { CategoryId } from "@/data/types";
 
@@ -7,11 +7,7 @@ const tone: Record<CategoryId, { bg: string; fg: string; Icon: typeof Building2 
   bosscari: { bg: "#e3eaf4", fg: "#2f4a6e", Icon: Building2 },
   timeline: { bg: "#e5efe8", fg: "#3b6b4d", Icon: CalendarClock },
   jobs: { bg: "#f1ebe0", fg: "#7a5a2c", Icon: Briefcase },
-  application: { bg: "#e4eef6", fg: "#2f5b7a", Icon: FileText },
-  tests: { bg: "#ece8f5", fg: "#55468a", Icon: ClipboardList },
-  interview: { bg: "#efe6ec", fg: "#7a4a63", Icon: MessagesSquare },
-  manners: { bg: "#f6e8ea", fg: "#8a3f4c", Icon: Shirt },
-  "final-check": { bg: "#e9ecf0", fg: "#4a5563", Icon: AlarmClock },
+  selection: { bg: "#efe6ec", fg: "#7a4a63", Icon: MessagesSquare },
 };
 
 export function Photo({

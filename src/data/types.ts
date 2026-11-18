@@ -1,6 +1,6 @@
 // サイトのデータの形。中身は src/data/ の各ファイルに置き、画面の部品には文章を書かない
 
-export type CategoryId = "bosscari" | "timeline" | "jobs" | "application" | "tests" | "interview" | "manners" | "final-check";
+export type CategoryId = "bosscari" | "timeline" | "jobs" | "selection";
 
 export type Section = {
   id: string; // カテゴリページ内の見出しのアンカー（#id）

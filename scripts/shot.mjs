@@ -8,7 +8,7 @@ import path from "node:path";
 const base = process.env.BASE_URL || "http://localhost:3000";
 const pages = [
   { name: "top", url: "/ja/" },
-  { name: "article", url: "/ja/interview/self-pr/" },
+  { name: "article", url: "/ja/selection/self-pr/" },
 ];
 const sizes = [
   { name: "pc", width: 1440, height: 900 },

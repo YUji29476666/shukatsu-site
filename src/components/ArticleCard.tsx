@@ -6,11 +6,7 @@ export const labelColor: Record<string, string> = {
   bosscari: "bg-amber-soft text-amber-ink",
   timeline: "bg-emerald-50 text-emerald-800",
   jobs: "bg-orange-50 text-orange-800",
-  application: "bg-sky-50 text-sky-800",
-  tests: "bg-violet-50 text-violet-800",
-  interview: "bg-navy text-white",
-  manners: "bg-rose-50 text-rose-800",
-  "final-check": "bg-slate-200 text-slate-800",
+  selection: "bg-navy text-white",
 };
 
 export function CategoryLabel({ category }: { category: string }) {

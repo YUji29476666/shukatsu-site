@@ -7,12 +7,11 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-5">
-        <a href="/ja/" className="shrink-0 whitespace-nowrap text-lg font-bold tracking-tight text-navy">
+        <a href="/ja/" className="text-lg font-bold tracking-tight text-navy">
           {site.name}
         </a>
-        {/* カテゴリが8つになったので、横に並べるのは幅1280px以上だけ。それより狭いときは右のメニューに入れる */}
-        <nav aria-label="カテゴリ" className="mx-auto hidden xl:block">
-          <ul className="flex gap-5 whitespace-nowrap text-[13px] font-medium text-ink">
+        <nav aria-label="カテゴリ" className="mx-auto hidden md:block">
+          <ul className="flex gap-8 text-sm font-medium text-ink">
             {categories.map((c) => (
               <li key={c.id}>
                 <a href={categoryUrl(c.id)} className="hover:text-orange">
@@ -22,7 +21,7 @@ export function Header() {
             ))}
           </ul>
         </nav>
-        <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-3 xl:ml-0">
+        <div className="ml-auto flex items-center gap-1 sm:gap-3 md:ml-0">
           <a href="/ja/search/" aria-label="サイト内を検索" className="grid h-11 w-11 place-items-center rounded-full text-ink hover:bg-page">
             <Search size={20} aria-hidden="true" />
           </a>
@@ -34,7 +33,7 @@ export function Header() {
               English
             </a>
           </div>
-          <details className="relative xl:hidden">
+          <details className="relative md:hidden">
             <summary aria-label="メニュー" className="grid h-11 w-11 cursor-pointer place-items-center rounded-full hover:bg-page">
               <Menu size={22} aria-hidden="true" />
             </summary>
