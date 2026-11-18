@@ -11,7 +11,6 @@ export const losAngelesCareerForum: Article = {
   category: "jobs",
   origin: "ロサンゼルスキャリアフォーラム",
   lastChecked: "2026-11-18", // ユーザーが確認日として指定（AI は自分では入れない）
-  reviewInterval: "3m", // 日程・会場・参加条件の記事なので3か月ごと
   updated: "",
   sources: [
     {

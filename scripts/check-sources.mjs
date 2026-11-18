@@ -19,7 +19,7 @@ const ROOT = process.cwd();
 const SNAP_FILE = path.join(ROOT, "data/source-snapshots.json");
 const REPORT_FILE = path.join(ROOT, "check-report.md");
 const TODAY = process.env.CHECK_TODAY || new Date().toISOString().slice(0, 10);
-const SOON_DAYS = 14;
+const SOON_DAYS = 7; // 見直しの7日前から知らせる（1か月ごとの見直しなので、毎週のチェックで1回は必ず拾える）
 
 // --- 記事データ（TypeScript）を読み込む：一時フォルダに .mjs として書き出して import する
 async function loadArticles() {
@@ -36,8 +36,9 @@ async function loadArticles() {
     writeFileSync(dest, code);
   }
   const mod = await import(pathToFileURL(path.join(out, "articles.mjs")).href);
+  const review = await import(pathToFileURL(path.join(out, "review.mjs")).href);
   rmSync(out, { recursive: true, force: true });
-  return mod.articles;
+  return { articles: mod.articles, defaultInterval: review.defaultReviewInterval };
 }
 
 // --- ページの文字を取り出す（タグ・スクリプト・スタイルを除き、空白をまとめる）
@@ -92,7 +93,7 @@ function changedPart(before, after) {
   return { before: cut(before.slice(Math.max(0, i - 40), before.length - j)), after: cut(after.slice(Math.max(0, i - 40), after.length - j)) };
 }
 
-const articles = await loadArticles();
+const { articles, defaultInterval } = await loadArticles();
 const snaps = existsSync(SNAP_FILE) ? JSON.parse(readFileSync(SNAP_FILE, "utf8")) : {};
 const newSnaps = { ...snaps };
 
@@ -112,8 +113,8 @@ for (const a of articles) {
     if (!byUrl.has(s.url)) byUrl.set(s.url, []);
     byUrl.get(s.url).push({ article: a, source: s });
   }
-  if (a.lastChecked && a.reviewInterval) {
-    const next = addMonths(a.lastChecked, Number(a.reviewInterval.replace("m", "")));
+  if (a.lastChecked) {
+    const next = addMonths(a.lastChecked, Number((a.reviewInterval ?? defaultInterval).replace("m", "")));
     const left = daysBetween(TODAY, next);
     if (left <= SOON_DAYS) due.push({ article: a, next, left });
   }

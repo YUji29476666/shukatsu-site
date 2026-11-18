@@ -1,5 +1,6 @@
 import { articles } from "@/data/articles";
 import { categories } from "@/data/categories";
+import { defaultReviewInterval } from "@/data/review";
 import type { Article, Category, CategoryId, Section, ReviewInterval } from "@/data/types";
 
 export const articleUrl = (a: Article) => `/ja/${a.category}/${a.slug}/`;
@@ -78,13 +79,13 @@ export function panelPills(c: Category): { name: string; href: string }[] {
 
 export const dateOrPlaceholder = (d: string) => d || "［日付］";
 
-export const intervalLabel: Record<ReviewInterval, string> = { "3m": "3か月ごと", "6m": "6か月ごと", "12m": "12か月ごと" };
+export const intervalLabel: Record<ReviewInterval, string> = { "1m": "1か月ごと", "3m": "3か月ごと", "6m": "6か月ごと", "12m": "12か月ごと" };
 
 /** 次の見直し予定日（YYYY-MM-DD）。最終確認日と見直しの間隔から計算する。どちらかがなければ空 */
 export function nextReview(a: Article): string {
-  if (!a.lastChecked || !a.reviewInterval) return "";
+  if (!a.lastChecked) return "";
   const [y, m, d] = a.lastChecked.split("-").map(Number);
-  const months = Number(a.reviewInterval.replace("m", ""));
+  const months = Number((a.reviewInterval ?? defaultReviewInterval).replace("m", ""));
   const t = new Date(Date.UTC(y, m - 1 + months, d));
   return t.toISOString().slice(0, 10);
 }
