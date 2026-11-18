@@ -99,11 +99,16 @@ const newSnaps = { ...snaps };
 const dead = []; // リンク切れ・開けない
 const changed = []; // 前回から文字が変わった
 const added = []; // 初めて記録した
+const manual = []; // 自動では開かない出典（autoCheck: false）
 const due = []; // 見直しの時期
 
 const byUrl = new Map(); // 同じ URL を何度も開かない
 for (const a of articles) {
   for (const s of a.sources ?? []) {
+    if (s.autoCheck === false) {
+      manual.push({ url: s.url, where: `${a.title}（${s.id}：${s.supports}）` });
+      continue;
+    }
     if (!byUrl.has(s.url)) byUrl.set(s.url, []);
     byUrl.get(s.url).push({ article: a, source: s });
   }
@@ -140,7 +145,7 @@ const needs = dead.length + changed.length + due.length;
 const L = [];
 L.push(`# 出典の自動チェック（${TODAY}）`, "");
 L.push(needs ? `**要確認あり：${needs}件**。下の記事を Claude に「この記事を確認して」と頼んでください。` : "要確認はありません。", "");
-L.push(`調べた出典：${byUrl.size}件（記事 ${articles.filter((a) => a.sources?.length).length}本）`, "");
+L.push(`調べた出典：${byUrl.size}件、自動では確かめない出典：${manual.length}件（記事 ${articles.filter((a) => a.sources?.length).length}本）`, "");
 if (dead.length) {
   L.push("## 開けなかった出典（リンク切れなど）", "");
   for (const d of dead) L.push(`- ${d.url}（状態：${d.status || d.error}）`, `  - 使っている記事：${d.where}`);
@@ -158,6 +163,11 @@ if (changed.length) {
 if (due.length) {
   L.push(`## 見直しの時期が来た記事（${SOON_DAYS}日以内を含む）`, "");
   for (const d of due) L.push(`- ${d.article.title}：見直し予定日 ${d.next}（${d.left < 0 ? `${-d.left}日過ぎています` : d.left === 0 ? "今日" : `あと${d.left}日`}）`);
+  L.push("");
+}
+if (manual.length) {
+  L.push("## 自動では確かめない出典（見直しの時期に人が確かめる）", "");
+  for (const m of manual) L.push(`- ${m.url}（${m.where}）`);
   L.push("");
 }
 if (added.length) {

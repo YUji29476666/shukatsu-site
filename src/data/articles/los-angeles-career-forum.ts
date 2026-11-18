@@ -31,6 +31,7 @@ export const losAngelesCareerForum: Article = {
       supports: "2027年の日程、会場（Kentia Hall）",
       aiOpened: "2026-11-18",
       checked: "2026-11-18",
+      autoCheck: false, // GitHub からの自動の読み込みを断る（406）ため、見直しの時期に人が確かめる
     },
     {
       id: "S3",

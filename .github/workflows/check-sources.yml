@@ -37,4 +37,11 @@ jobs:
         if: steps.check.outputs.needs != '0'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh issue create --title "出典の自動チェック：要確認 $(date -u +%Y-%m-%d)" --body-file check-report.md
+        # まだ閉じていない「要確認」の Issue があれば、そこにコメントを足す（毎週 Issue が増えないように）
+        run: |
+          open=$(gh issue list --state open --search "出典の自動チェック：要確認 in:title" --json number --jq '.[0].number')
+          if [ -n "$open" ]; then
+            gh issue comment "$open" --body-file check-report.md
+          else
+            gh issue create --title "出典の自動チェック：要確認" --body-file check-report.md
+          fi

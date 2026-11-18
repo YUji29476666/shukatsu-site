@@ -42,6 +42,7 @@ export type Source = {
   supports: string; // この出典で裏付けている内容
   aiOpened: string; // AI がページを開いて内容を照らし合わせた日（YYYY-MM-DD）
   checked: string; // 人が開いて確かめた日。人だけが入れる（未確認は空）
+  autoCheck?: boolean; // false＝自動チェックで開かない（自動の読み込みを断るサイト）。見直しの時期に人が確かめる
 };
 
 // 見直しの間隔：日程・締切・条件・お金＝3m、制度・試験の形式＝6m、書き方などのノウハウ＝12m
