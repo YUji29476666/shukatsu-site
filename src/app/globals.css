@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+/* 色・文字の決まり（DESIGN：信頼ネイビー＋アンバー） */
+@theme {
+  --color-page: #f8fafc;
+  --color-navy: #0f2a4a;
+  --color-navy-soft: #1e3a5f;
+  --color-ink: #1f2937;
+  --color-sub: #5b6475;
+  --color-line: #e8edf3;
+  --color-amber: #f59e0b;
+  --color-amber-soft: #fef3c7;
+  --color-amber-ink: #92400e;
+  --color-beige: #f6f1ea;
+  --color-orange: #c2541a;
+  --font-sans: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.8;
+  line-break: strict;
+  -webkit-font-smoothing: antialiased;
+}
+:focus-visible {
+  outline: 2px solid var(--color-orange);
+  outline-offset: 2px;
+}
+/* 本文の読みやすさ（1行35〜40文字程度） */
+.prose-ja {
+  max-width: 40em;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
