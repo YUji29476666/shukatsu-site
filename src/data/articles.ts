@@ -18,21 +18,6 @@ export const articles: Article[] = [
   // ボスキャリ
   stub("boston-career-forum", "ボストンキャリアフォーラム", "bosscari", "ボストンキャリアフォーラム"),
   stub("growth-mindset", "Growth Mind Set", "bosscari", "Growth Mind Set", { popular: 1 }),
-  // 就活タイムライン（パネル用プレースホルダー）
-  stub("timeline-panel-1", "[後で記入]", "timeline", ""),
-  stub("timeline-panel-2", "[後で記入]", "timeline", ""),
-  stub("timeline-panel-3", "[後で記入]", "timeline", ""),
-  stub("timeline-panel-4", "[後で記入]", "timeline", ""),
-  // 求人・採用情報（パネル用プレースホルダー）
-  stub("jobs-panel-1", "[後で記入]", "jobs", ""),
-  stub("jobs-panel-2", "[後で記入]", "jobs", ""),
-  stub("jobs-panel-3", "[後で記入]", "jobs", ""),
-  stub("jobs-panel-4", "[後で記入]", "jobs", ""),
-  // 応募・提出（パネル用プレースホルダー）
-  stub("selection-panel-1", "[後で記入]", "selection", ""),
-  stub("selection-panel-2", "[後で記入]", "selection", ""),
-  stub("selection-panel-3", "[後で記入]", "selection", ""),
-  stub("selection-panel-4", "[後で記入]", "selection", ""),
   // 就活タイムライン
   stub("timeline-art", "アート系の就活タイムライン", "timeline", "就活タイムライン/アート系"),
   stub("timeline-business", "ビジネス系の就活タイムライン", "timeline", "就活タイムライン/ビジネス系", { popular: 3 }),

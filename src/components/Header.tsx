@@ -22,7 +22,7 @@ export function Header() {
           </ul>
         </nav>
         <div className="ml-auto flex items-center gap-1 sm:gap-3 md:ml-0">
-          <a href="#" aria-label="サイト内を検索" className="grid h-11 w-11 place-items-center rounded-full text-ink hover:bg-page">
+          <a href="/ja/search/" aria-label="サイト内を検索" className="grid h-11 w-11 place-items-center rounded-full text-ink hover:bg-page">
             <Search size={20} aria-hidden="true" />
           </a>
           <div className="flex shrink-0 whitespace-nowrap rounded-full border border-line p-0.5 text-xs">

@@ -20,10 +20,6 @@ export const categories: Category[] = [
     en: "TIMELINE",
     tagline: "「今」何をすべきかがわかる",
     sections: [{ id: "by-industry", name: "業界別", articles: ["timeline-art", "timeline-business", "timeline-engineering"] }],
-    features: {
-      name: "人気のページ",
-      articles: ["timeline-panel-1", "timeline-panel-2", "timeline-panel-3", "timeline-panel-4"],
-    },
   },
   {
     id: "jobs",
@@ -43,10 +39,6 @@ export const categories: Category[] = [
         articles: ["alpha-adviser", "career-academy", "linkedin-student-club", "sekaia", "finance-economics-academy"],
       },
     ],
-    features: {
-      name: "人気のページ",
-      articles: ["jobs-panel-1", "jobs-panel-2", "jobs-panel-3", "jobs-panel-4"],
-    },
   },
   {
     id: "selection",
@@ -76,9 +68,5 @@ export const categories: Category[] = [
       { id: "manners", name: "マナー・服装", articles: ["manners"] },
       { id: "final-check", name: "直前・当日リマインド", articles: ["final-check"] },
     ],
-    features: {
-      name: "人気のページ",
-      articles: ["selection-panel-1", "selection-panel-2", "selection-panel-3", "selection-panel-4"],
-    },
   },
 ];

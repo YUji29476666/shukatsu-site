@@ -62,6 +62,7 @@ export function popularArticles(limit = 6): Article[] {
 }
 
 /** トップページのパネルに出す記事（ボスキャリは「人気のページ」の紹介を優先） */
+/** 「カテゴリから探す」のパネルに出す記事。ボスキャリは features、ほかはカテゴリの並び順の先頭から */
 export function panelArticles(c: Category, limit = 4): Article[] {
   const slugs = c.features ? c.features.articles : c.sections.flatMap((s) => s.articles);
   return slugs.slice(0, limit).map(mustArticle);
@@ -74,3 +75,21 @@ export function panelPills(c: Category): { name: string; href: string }[] {
 }
 
 export const dateOrPlaceholder = (d: string) => d || "［日付］";
+
+/** 検索用：記事のタイトル・中カテゴリ・導入文・本文をつないだ文字列（カテゴリ名は入れない。「面接」でカテゴリ全体が出てしまうため） */
+export function searchText(a: Article): string {
+  const parts: string[] = [a.title, sectionOf(a)?.name ?? "", a.lead ?? ""];
+  for (const b of a.blocks ?? []) {
+    if ("text" in b) parts.push(b.text);
+    if (b.type === "example") parts.push(b.title);
+    if (b.type === "steps") b.items.forEach((i) => parts.push(i.title, i.text));
+    if (b.type === "ngok") b.pairs.forEach((p) => parts.push(p.ng, p.ok));
+    if (b.type === "checklist") parts.push(...b.items);
+  }
+  return parts.join(" ");
+}
+
+/** サイト内のすべての記事（カテゴリの並び順） */
+export function allArticles(): Article[] {
+  return categories.flatMap((c) => sequenceOf(c.id));
+}
