@@ -1,4 +1,4 @@
-import { CategoryTabs } from "@/components/CategoryTabs";
+import { CategoryGrid } from "@/components/CategoryGrid";
 import { EventSection } from "@/components/EventSection";
 import { Hero } from "@/components/Hero";
 import { Photo } from "@/components/Photo";
@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <CategoryTabs />
+      <CategoryGrid />
       <div className="border-y border-line bg-white">
         <EventSection />
       </div>

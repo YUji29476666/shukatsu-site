@@ -122,3 +122,12 @@ export function searchText(a: Article): string {
 export function allArticles(): Article[] {
   return categories.flatMap((c) => sequenceOf(c.id));
 }
+
+/** トップの「カテゴリから探す」に並べる項目：sectionPages のカテゴリ（応募・面接）は分け方ごと、ほかはカテゴリそのもの */
+export function browseItems(): { name: string; href: string; icon: Section["icon"] }[] {
+  return categories.flatMap((c) =>
+    c.sectionPages
+      ? c.sections.map((s) => ({ name: s.name, href: sectionUrl(c, s), icon: s.icon }))
+      : [{ name: c.name, href: categoryUrl(c.id), icon: c.icon }],
+  );
+}

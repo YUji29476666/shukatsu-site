@@ -9,6 +9,7 @@ export const categories: Category[] = [
     name: "ボスキャリ",
     en: "BOSTON",
     tagline: "学生から人気なページ",
+    icon: "plane",
     sections: [{ id: "bosscari", name: "ボスキャリ", icon: "plane", articles: ["boston-career-forum", "growth-mindset"] }],
     features: {
       name: "人気のページ",
@@ -20,13 +21,15 @@ export const categories: Category[] = [
     name: "就活タイムライン",
     en: "TIMELINE",
     tagline: "「今」何をすべきかがわかる",
-    sections: [{ id: "by-industry", name: "業界別", icon: "calendar", articles: ["timeline-art", "timeline-business", "timeline-engineering"] }],
+    icon: "clock",
+    sections: [{ id: "by-industry", name: "業界別", icon: "clock", articles: ["timeline-art", "timeline-business", "timeline-engineering"] }],
   },
   {
     id: "jobs",
     name: "求人・就職情報",
     en: "JOBS",
     tagline: "どのサイトで探せばいい？を解決",
+    icon: "briefcase",
     sections: [
       { id: "job-sites", name: "就活サイト・アプリ", icon: "smartphone", articles: ["linkedin-guide", "job-platforms-by-country"] },
       {
@@ -48,6 +51,7 @@ export const categories: Category[] = [
     name: "応募・面接",
     en: "INTERVIEW",
     tagline: "ES・SPI・面接、不安を解消",
+    icon: "message",
     sectionPages: true,
     sections: [
       {
