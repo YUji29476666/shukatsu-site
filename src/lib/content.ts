@@ -1,5 +1,5 @@
 import { articles } from "@/data/articles";
-import { categories } from "@/data/categories";
+import { browseOrder, categories } from "@/data/categories";
 import { defaultReviewInterval } from "@/data/review";
 import type { Article, Category, CategoryId, Section, ReviewInterval } from "@/data/types";
 
@@ -124,10 +124,12 @@ export function allArticles(): Article[] {
 }
 
 /** トップの「カテゴリから探す」に並べる項目：sectionPages のカテゴリ（応募・面接）は分け方ごと、ほかはカテゴリそのもの */
-export function browseItems(): { name: string; href: string; icon: Section["icon"] }[] {
-  return categories.flatMap((c) =>
+export function browseItems(sorted = true): { id: string; name: string; href: string; icon: Section["icon"] }[] {
+  const items = categories.flatMap((c) =>
     c.sectionPages
-      ? c.sections.map((s) => ({ name: s.name, href: sectionUrl(c, s), icon: s.icon }))
-      : [{ name: c.name, href: categoryUrl(c.id), icon: c.icon }],
+      ? c.sections.map((s) => ({ id: s.id, name: s.name, href: sectionUrl(c, s), icon: s.icon }))
+      : [{ id: c.id, name: c.shortName ?? c.name, href: categoryUrl(c.id), icon: c.icon }],
   );
+  const rank = (id: string) => (browseOrder.includes(id) ? browseOrder.indexOf(id) : browseOrder.length);
+  return sorted ? items.sort((a, b) => rank(a.id) - rank(b.id)) : items; // sorted=false：カテゴリの並び順のまま（サイドバー）
 }

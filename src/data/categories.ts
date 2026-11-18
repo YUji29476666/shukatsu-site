@@ -9,7 +9,7 @@ export const categories: Category[] = [
     name: "ボスキャリ",
     en: "BOSTON",
     tagline: "学生から人気なページ",
-    icon: "plane",
+    icon: "globe",
     sections: [{ id: "bosscari", name: "ボスキャリ", icon: "plane", articles: ["boston-career-forum", "growth-mindset"] }],
     features: {
       name: "人気のページ",
@@ -30,6 +30,7 @@ export const categories: Category[] = [
     en: "JOBS",
     tagline: "どのサイトで探せばいい？を解決",
     icon: "briefcase",
+    shortName: "求人・就職",
     sections: [
       { id: "job-sites", name: "就活サイト・アプリ", icon: "smartphone", articles: ["linkedin-guide", "job-platforms-by-country"] },
       {
@@ -94,3 +95,7 @@ export const categories: Category[] = [
     ],
   },
 ];
+
+// トップの「カテゴリから探す」とサイドバーの並び順（ユーザーの見本のとおり）。カテゴリの id か、応募・面接の分け方の id
+// PC の3列では、縦に「ボスキャリ・就活タイムライン」「応募準備・質問対策」「求人・就職」と並ぶ
+export const browseOrder = ["bosscari", "timeline", "application", "questions", "jobs"];

@@ -72,10 +72,11 @@ export default async function ArticlePage({ params }: { params: Params }) {
   if (sp) {
     return (
       <ListLayout
-        crumbs={[{ name: sp.c.name, href: categoryUrl(sp.c.id) }, { name: sp.s.name }]}
+        crumbs={[{ name: sp.s.name }]}
+        current={sp.s.id}
         title={`${sp.s.name}の記事一覧`}
         count={sp.s.articles.length}
-        icon={<SectionIcon name={sp.s.icon} size={28} />}
+        icon={<SectionIcon name={sp.s.icon} size={30} />}
       >
         <ArticleRows items={sp.s.articles.map(mustArticle)} />
       </ListLayout>
