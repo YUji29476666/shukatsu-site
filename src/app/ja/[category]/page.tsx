@@ -33,7 +33,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
           <section key={s.id} id={s.id} aria-label={s.name} className="scroll-mt-24">
             {many && (
               <h2 className="mt-10 flex items-center gap-2 text-lg font-bold">
-                <SectionIcon name={s.icon} size={20} className="text-navy" />
+                <SectionIcon name={s.icon} size={20} className="text-sky" />
                 {s.name}
               </h2>
             )}
@@ -50,7 +50,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
         {c.sections.map((s) => (
           <li key={s.id} className="border-b border-line">
             <a href={sectionUrl(c, s)} className="group flex min-h-20 items-center gap-4">
-              <SectionIcon name={s.icon} size={26} className="shrink-0 text-navy" />
+              <SectionIcon name={s.icon} size={26} className="shrink-0 text-sky" />
               <span className="min-w-0 flex-1">
                 <span className="block font-bold group-hover:text-navy">{s.name}</span>
                 <span className="text-xs text-sub">{s.articles.length}記事</span>

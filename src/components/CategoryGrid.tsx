@@ -17,8 +17,8 @@ export function CategoryGrid() {
         {browseItems().map((it) => (
           <li key={it.href} className="border-b border-line">
             <a href={it.href} className="group flex min-h-14 items-center gap-3">
-              <SectionIcon name={it.icon} size={20} className="shrink-0 text-navy" />
-              <span className="min-w-0 flex-1 text-sm group-hover:text-orange">{it.name}</span>
+              <SectionIcon name={it.icon} size={20} className="shrink-0 text-sky" />
+              <span className="min-w-0 flex-1 text-sm group-hover:text-sky-ink">{it.name}</span>
               <ChevronRight size={15} className="shrink-0 text-sub transition group-hover:translate-x-0.5" aria-hidden="true" />
             </a>
           </li>

@@ -71,6 +71,10 @@ docs/ の資料（site-design-decisions.md、CLAUDE-old.md）は前のやり方�
 ## 出典チェックの Slack 通知（仮置き）
 - 要確認があるとき、Issue に加えて Slack にも件数と Issue のリンクを送る。GitHub の Secrets に `SLACK_WEBHOOK_URL` があるときだけ送る（ユーザーが登録する。Claude は URL を扱わない）
 
+## 色
+- 全体は薄い水色（ユーザーの指示。PORTキャリアの色味を参考）。決まりは src/app/globals.css の @theme だけで変える
+- page＝ページの背景（薄い水色）、sky-soft／beige＝帯・パネル、sky＝アイコン・丸などの飾り、sky-ink＝水色の文字（白地で読める濃さ）、navy＝文字の強調・ボタン・フッター、amber＝グロキャリ主催などのラベル
+
 ## 写真
 - Unsplash の無料写真（Unsplash License。Unsplash+ は使わない）を、images.unsplash.com から直接表示する。src/data/site.ts の photos に、写真の URL・撮影者・写真ページの URL を記録する
 - 写真が決まっていない枠は、灰色の「写真（仮）」のまま。AI 生成画像は使わない

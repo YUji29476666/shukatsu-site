@@ -5,7 +5,7 @@ import { Photo } from "./Photo";
 export const labelColor: Record<string, string> = {
   bosscari: "bg-amber-soft text-amber-ink",
   timeline: "bg-emerald-50 text-emerald-800",
-  jobs: "bg-orange-50 text-orange-800",
+  jobs: "bg-sky-ink-50 text-sky-ink-800",
   selection: "bg-navy text-white",
 };
 

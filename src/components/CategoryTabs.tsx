@@ -85,9 +85,9 @@ export function CategoryTabs() {
                 tabIndex={i === 0 ? 0 : -1}
                 data-cat={c.id}
                 data-on={i === 0 ? "1" : "0"}
-                className="group flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-line bg-white px-4 text-left text-sm text-sub transition data-[on=1]:border-orange data-[on=1]:bg-orange data-[on=1]:text-white md:rounded-l-full md:rounded-r-none md:border-0 md:bg-transparent md:py-4 md:pl-5 md:data-[on=1]:bg-beige md:data-[on=1]:font-bold md:data-[on=1]:text-orange"
+                className="group flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-line bg-white px-4 text-left text-sm text-sub transition data-[on=1]:border-sky-ink data-[on=1]:bg-sky-ink data-[on=1]:text-white md:rounded-l-full md:rounded-r-none md:border-0 md:bg-transparent md:py-4 md:pl-5 md:data-[on=1]:bg-beige md:data-[on=1]:font-bold md:data-[on=1]:text-sky-ink"
               >
-                <span className="hidden h-1.5 w-1.5 rounded-full bg-transparent md:inline-block md:group-data-[on=1]:bg-orange" />
+                <span className="hidden h-1.5 w-1.5 rounded-full bg-transparent md:inline-block md:group-data-[on=1]:bg-sky-ink" />
                 <span className="whitespace-nowrap">{c.name}</span>
                 <span className="hidden whitespace-nowrap text-[10px] tracking-wider opacity-70 md:inline">— {c.en}</span>
                 <ChevronRight size={16} className="ml-auto hidden md:block" aria-hidden="true" />

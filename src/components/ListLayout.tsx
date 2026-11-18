@@ -23,8 +23,8 @@ export function ListLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white">
-      <div className="border-b border-line bg-page">
+    <div>
+      <div className="border-b border-line bg-sky-soft">
         <nav aria-label="パンくずリスト" className="mx-auto max-w-6xl px-5 py-3 text-xs text-sub">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
@@ -52,7 +52,7 @@ export function ListLayout({
       <div className="mx-auto grid max-w-6xl gap-12 px-5 pb-20 pt-10 md:grid-cols-[minmax(0,1fr)_260px] lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-16">
         <div className="min-w-0">
           <header className="flex items-center gap-5 border-b border-line pb-8">
-            {icon && <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-navy text-white md:h-20 md:w-20">{icon}</span>}
+            {icon && <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-sky text-white md:h-20 md:w-20">{icon}</span>}
             <div>
               <h1 className="text-2xl font-bold tracking-tight md:text-3xl">{title}</h1>
               <p className="mt-1 text-sm text-sub">{count}記事</p>
@@ -81,7 +81,7 @@ export function ArticleRows({ items }: { items: Article[] }) {
                 <Photo id={a.slug} category={a.category} rounded="rounded-lg" small className="transition duration-300 group-hover:scale-[1.03]" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-bold text-orange">{label}</p>
+                <p className="text-xs font-bold text-sky-ink">{label}</p>
                 <p className="mt-1.5 text-base font-bold leading-snug group-hover:text-navy md:text-xl">{a.title}</p>
                 <p className="mt-2 text-xs text-sub">最終確認日：{dateOrPlaceholder(a.lastChecked)}</p>
               </div>
@@ -116,9 +116,9 @@ function ListSidebar({ current }: { current?: string }) {
           {browseItems(false).map((it) => {
             const on = it.id === current;
             return (
-              <li key={it.id} className={on ? "border-b-2 border-navy" : "border-b border-line"}>
-                <a href={it.href} aria-current={on ? "page" : undefined} className={`flex min-h-12 items-center gap-2 text-sm hover:text-orange ${on ? "font-bold text-navy" : ""}`}>
-                  <SectionIcon name={it.icon} size={16} className="shrink-0 text-navy" />
+              <li key={it.id} className={on ? "border-b-2 border-sky" : "border-b border-line"}>
+                <a href={it.href} aria-current={on ? "page" : undefined} className={`flex min-h-12 items-center gap-2 text-sm hover:text-sky-ink ${on ? "font-bold text-navy" : ""}`}>
+                  <SectionIcon name={it.icon} size={16} className="shrink-0 text-sky" />
                   {it.name}
                 </a>
               </li>

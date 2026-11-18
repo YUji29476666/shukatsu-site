@@ -123,7 +123,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
         <ul className="mt-3 divide-y divide-line text-sm">
           {categories.map((x) => (
             <li key={x.id}>
-              <a href={categoryUrl(x.id)} className={`flex min-h-11 items-center justify-between hover:text-orange ${x.id === c.id ? "font-bold" : ""}`}>
+              <a href={categoryUrl(x.id)} className={`flex min-h-11 items-center justify-between hover:text-sky-ink ${x.id === c.id ? "font-bold" : ""}`}>
                 {x.name} <ArrowRight size={14} aria-hidden="true" />
               </a>
             </li>

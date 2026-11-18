@@ -33,7 +33,7 @@ export function Toc({ toc, open = true }: { toc: TocItem[]; open?: boolean }) {
       <ol className="mt-3 space-y-1.5 text-sm">
         {toc.map((t) => (
           <li key={t.id} className={t.level === 3 ? "pl-5 text-xs text-sub" : ""}>
-            <a href={`#${t.id}`} className="hover:text-orange">
+            <a href={`#${t.id}`} className="hover:text-sky-ink">
               {t.label}
             </a>
           </li>

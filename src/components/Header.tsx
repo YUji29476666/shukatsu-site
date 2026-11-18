@@ -14,7 +14,7 @@ export function Header() {
           <ul className="flex gap-8 text-sm font-medium text-ink">
             {categories.map((c) => (
               <li key={c.id}>
-                <a href={categoryUrl(c.id)} className="hover:text-orange">
+                <a href={categoryUrl(c.id)} className="hover:text-sky-ink">
                   {c.name}
                 </a>
               </li>
