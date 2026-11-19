@@ -10,8 +10,7 @@ export const categories: Category[] = [
     en: "BOSTON",
     tagline: "学生から人気なページ",
     icon: "globe",
-    // ボスキャリの記事一覧に並ぶ6記事（ユーザーの指示）。応募準備・選考試験・面接対策・直前・当日リマインドは
-    // 応募・面接にある記事で、ボスキャリの一覧にも出す（記事の URL は応募・面接のまま）
+    // ボスキャリの記事一覧に並ぶ6記事（ユーザーの指示）。応募準備〜直前・当日リマインドは応募・面接の同じ名前の記事とは別物
     sections: [
       {
         id: "bosscari",
@@ -66,17 +65,17 @@ export const categories: Category[] = [
         icon: "file",
         // ユーザーの指示で、応募準備・選考試験対策・マナー・服装・直前・当日リマインドを1つにまとめた
         articles: [
-          "application-prep",
+          "shukatsu-application-prep",
           "self-analysis",
           "entry-sheet",
           "resume",
-          "selection-tests",
+          "shukatsu-selection-tests",
           "spi",
           "tamatebako",
           "tg-web",
           "coding-test",
           "manners",
-          "final-check",
+          "shukatsu-final-check",
         ],
       },
       {
@@ -84,7 +83,7 @@ export const categories: Category[] = [
         name: "質問対策",
         icon: "message",
         articles: [
-          "interview-prep",
+          "shukatsu-interview-prep",
           "star-story",
           "self-introduction",
           "gakuchika",
