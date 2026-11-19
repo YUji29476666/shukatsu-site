@@ -43,3 +43,6 @@ next-env.d.ts
 # 出典の自動チェック
 .tmp-data/
 check-report.md
+
+# wrangler（手元の確認用）
+.wrangler/

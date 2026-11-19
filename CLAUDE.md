@@ -67,11 +67,24 @@ docs/ の資料（site-design-decisions.md、CLAUDE-old.md）は前のやり方�
 - 要確認があれば GitHub に Issue「出典の自動チェック：要確認」ができる。AI は使わない（費用なし）
 - Issue が来たら、ユーザーが Claude に「この記事を確認して」と頼む → Claude が変わった所と記事を照らし合わせて修正案を出す → 見本 → OK で公開。変更がなければ、ユーザーが確認日を伝えて最終確認日を更新する
 
-## 記事の評価ボタン
-- 本文がある記事の最後に「この記事は役に立ちましたか？」と「役に立った／役に立たなかった」を出す（src/components/RatingButtons.tsx）。理由は聞かない（ユーザーの指示）
-- 押すと `functions/api/rate.js`（Cloudflare Pages Functions）が、Cloudflare D1 に記事ごとの数だけを足す。個人情報・Cookie は使わない。同じブラウザで2回押せないよう、押したことはそのブラウザにだけ覚える
-- D1 は Cloudflare の画面でユーザーが作り、Pages の設定で「DB」という名前でつなぐ（本番・プレビュー両方）。つないでいないと「送信できませんでした」と出る
-- 数の見方：Cloudflare の D1 の画面で `SELECT * FROM ratings ORDER BY down DESC;`
+## いいね（♡）
+- 本文がある記事の最後に、♡のいいねボタンといいねの数を出す（src/components/LikeButton.tsx）。もう一度押すと取り消せる（ユーザーの指示）
+- 押すと `functions/api/like.js`（Cloudflare Pages Functions）が D1 の表 `likes`（記事の slug・匿名ID・日時）に入れる／消す。数は記事ごとの件数
+- 1回制限：ブラウザごとにランダムな匿名ID を作って localStorage に持ち、「記事 × 匿名ID」は1件まで。ブラウザの記録を消すと押し直せるが、ユーザーと決めた許容範囲。IP アドレス・Cookie・個人情報は使わない
+- 数の見方：Cloudflare の D1 の画面で `SELECT slug, COUNT(*) AS n FROM likes GROUP BY slug ORDER BY n DESC;`
+- 前の評価ボタン（RatingButtons.tsx・functions/api/rate.js・表 ratings）は使っていない。消すかどうかはユーザーに確認中
+
+## 記事の誤りの報告
+- 記事ページの「記事の誤りを報告する」の「報告する」で入力欄が開き、その場で送れる（src/components/ReportBox.tsx）。連絡先・名前は聞かない（ユーザーの指示）
+- 送ると `functions/api/report.js` が、Cloudflare Turnstile で人か確かめる → D1 の表 `reports` に保存（消さずに残す。ユーザーの指示）→ 報告用の**非公開**リポジトリに Issue「[読者の報告] 記事名」を立てる（ラベル「読者の報告」）。対応状況は Issue で管理する（閉じる＝対応済み）
+- このサイトのリポジトリは公開なので、報告の Issue はここには立てない（誰でも読めてしまう）
+- Turnstile のサイトキーは src/data/site.ts の `turnstileSiteKey`。空のあいだは「報告フォームは準備中です」と出る
+- Issue の作成に失敗しても報告は D1 に残る。確認：`SELECT * FROM reports WHERE issue_number IS NULL;`
+
+## Cloudflare Pages の設定（本番・プレビュー両方）
+- D1 のつなぎ込み：`DB`
+- 環境変数：`TURNSTILE_SECRET_KEY`（Secret）、`GITHUB_TOKEN`（Secret。報告用リポジトリの Issue だけ書けるトークン）、`REPORT_REPO`（報告用の非公開リポジトリ。例：YUji29476666/shukatsu-site-reports）
+- 表は API が最初に呼ばれたときに自動で作る（手で SQL を流さなくてよい）
 
 ## 出典チェックの Slack 通知（仮置き）
 - 要確認があるとき、Issue に加えて Slack にも件数と Issue のリンクを送る。GitHub の Secrets に `SLACK_WEBHOOK_URL` があるときだけ送る（ユーザーが登録する。Claude は URL を扱わない）

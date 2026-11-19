@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, Flag } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ArticleBody, buildToc, Toc } from "@/components/ArticleBody";
 import { ArticleCard, labelColor } from "@/components/ArticleCard";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Photo } from "@/components/Photo";
-import { RatingButtons } from "@/components/RatingButtons";
+import { LikeButton } from "@/components/LikeButton";
+import { ReportBox } from "@/components/ReportBox";
 import { ArticleRows, ListLayout } from "@/components/ListLayout";
 import { SectionIcon } from "@/components/SectionIcon";
 import { articles } from "@/data/articles";
 import { categories } from "@/data/categories";
-import { site } from "@/data/site";
 import type { Article } from "@/data/types";
 import {
   articleUrl,
@@ -89,7 +89,6 @@ export default async function ArticlePage({ params }: { params: Params }) {
   const { prev, next } = prevNext(a);
   const related = relatedOf(a);
   const { toc, numbers } = a.blocks ? buildToc(a.blocks) : { toc: [], numbers: {} };
-  const reportHref = `${site.reportFormUrl}`;
   const fallback = { name: c.name, href: categoryUrl(c.id) };
 
   // 右のサイドバー（人気記事・カテゴリー）。PC は本文の横、スマホは「準備中」／本文のすぐ下に出す
@@ -188,28 +187,16 @@ export default async function ArticlePage({ params }: { params: Params }) {
             <p className="mt-8 rounded-2xl border border-dashed border-line bg-white p-8 text-center text-sub">この記事は準備中です。</p>
           )}
 
-          {/* 評価ボタン：本文がある記事だけ。票は Cloudflare（functions/api/rate.js → D1）に数だけ残る */}
-          {a.blocks && <RatingButtons slug={a.slug} />}
+          {/* いいね（♡）：本文がある記事だけ。functions/api/like.js → D1。もう一度押すと取り消せる */}
+          {a.blocks && <LikeButton slug={a.slug} />}
 
           <div className="mt-8 space-y-6 md:hidden">{sideCards}</div>
 
           {/* 出典は記事データ（sources）に持つだけで、読む人には見せない（ユーザーの指示） */}
           {a.origin && <p className="mt-10 text-xs text-sub">この記事は Ryugaku Wiki「{a.origin}」をもとに作成しています。</p>}
 
-          <section aria-labelledby="report-h" className="mt-5 flex flex-wrap items-center gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-amber-soft text-amber-ink">
-              <Flag size={18} aria-hidden="true" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <h2 id="report-h" className="font-bold">
-                記事の誤りを報告する
-              </h2>
-              <p className="text-sm text-sub">内容の誤りや古くなった情報に気づいたら、教えてください。確認して修正します。</p>
-            </div>
-            <a href={reportHref} data-article={a.title} className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-navy px-5 text-sm font-medium text-navy hover:bg-navy hover:text-white">
-              報告する <ArrowRight size={15} aria-hidden="true" />
-            </a>
-          </section>
+          {/* 誤りの報告：その場で送れる。functions/api/report.js → D1 に保存し、報告用の非公開リポジトリに Issue を立てる */}
+          <ReportBox slug={a.slug} title={a.title} path={articleUrl(a)} />
 
           <nav aria-label="前の記事と次の記事" className="mt-8 grid gap-3 sm:grid-cols-2">
             <PrevNextCard a={prev} dir="prev" fallback={fallback} />

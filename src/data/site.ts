@@ -7,7 +7,8 @@ export const site = {
   lead: "ボスキャリ・選考対策・求人の探し方まで、留学生の就活に必要な情報をまとめたサイト",
   searchPlaceholder: "知りたいことを入力（例：ボスキャリ、SPI、自己PR）",
   keywords: ["ボスキャリ", "ES", "SPI", "自己PR", "ケース面接", "LinkedIn"],
-  reportFormUrl: "#report", // 後で Google フォームの URL に差し替える
+  // 誤りの報告フォームの Cloudflare Turnstile（ボット対策）のサイトキー。公開してよい値。空のあいだは「報告フォームは準備中です」と出る
+  turnstileSiteKey: "",
 };
 
 export const events = {
