@@ -2,9 +2,12 @@
 
 export type CategoryId = "bosscari" | "timeline" | "jobs" | "selection";
 
+export type SectionIcon = "globe" | "plane" | "clock" | "briefcase" | "calendar" | "smartphone" | "users" | "file" | "message";
+
 export type Section = {
-  id: string; // カテゴリページ内の見出しのアンカー（#id）
+  id: string; // 記事一覧ページの URL（/ja/{カテゴリ}/{id}/）。記事の slug と重ねない
   name: string; // 中カテゴリ名
+  icon: SectionIcon; // 一覧で名前の横に出すアイコン（src/components/SectionIcon.tsx）
   articles: string[]; // 記事の slug。この並び順が「前の記事／次の記事」の順番
 };
 
@@ -13,7 +16,10 @@ export type Category = {
   name: string;
   en: string; // タブの横の小さな英字
   tagline: string; // ひとこと
+  icon: SectionIcon; // トップの「カテゴリから探す」で名前の横に出すアイコン
+  shortName?: string; // 「カテゴリから探す」とサイドバーでだけ使う短い名前（ユーザーの見本のとおり）
   sections: Section[]; // このカテゴリがホームの記事
+  sectionPages?: boolean; // true：中の分け方をそれぞれ1つのカテゴリとして扱い、記事一覧ページ（/ja/{カテゴリ}/{id}/）を作る（今は応募・面接だけ。ユーザーの指示）
   features?: { name: string; articles: string[] }; // ほかのカテゴリの記事の「紹介」（前後の順番には入れない）
 };
 
@@ -45,8 +51,8 @@ export type Source = {
   autoCheck?: boolean; // false＝自動チェックで開かない（自動の読み込みを断るサイト）。見直しの時期に人が確かめる
 };
 
-// 見直しの間隔：日程・締切・条件・お金＝3m、制度・試験の形式＝6m、書き方などのノウハウ＝12m
-export type ReviewInterval = "3m" | "6m" | "12m";
+// 見直しの間隔。全記事共通の値は src/data/review.ts（今は1か月）
+export type ReviewInterval = "1m" | "3m" | "6m" | "12m";
 
 export type Article = {
   slug: string;
@@ -56,7 +62,8 @@ export type Article = {
   popular?: number; // よく読まれている記事の順番（小さいほど上）
   related?: string[]; // 関連記事（手で指定。なければ自動）
   lastChecked: string; // 最終確認日＝人が記事全体を確かめた日。人だけが入れる（未確認は空）
-  reviewInterval?: ReviewInterval; // 見直しの間隔。次の見直し予定日は最終確認日＋間隔で計算する（保存しない）
+  reviewBy?: string; // この日（YYYY-MM-DD）を過ぎたら、間隔を待たずに見直しを知らせる（フォーラムの開催日の翌日など。出典で確かめた日付だけ）
+  reviewInterval?: ReviewInterval; // 書かなければ全記事共通の間隔（src/data/review.ts）。次の見直し予定日は最終確認日＋間隔で計算する（保存しない）
   updated: string; // 更新日（未確認は空）
   origin?: string; // Ryugaku Wiki のページ名
   sources: Source[];

@@ -5,6 +5,9 @@ import { ArticleBody, buildToc, Toc } from "@/components/ArticleBody";
 import { ArticleCard, labelColor } from "@/components/ArticleCard";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Photo } from "@/components/Photo";
+import { RatingButtons } from "@/components/RatingButtons";
+import { ArticleRows, ListLayout } from "@/components/ListLayout";
+import { SectionIcon } from "@/components/SectionIcon";
 import { articles } from "@/data/articles";
 import { categories } from "@/data/categories";
 import { site } from "@/data/site";
@@ -17,20 +20,31 @@ import {
   getCategory,
   popularArticles,
   prevNext,
+  mustArticle,
   relatedOf,
   sectionOf,
+  sectionPages,
+  sectionUrl,
 } from "@/lib/content";
 
 export const dynamicParams = false;
+// この URL（/ja/{カテゴリ}/{xxx}/）は、記事ページと「分け方ごとの記事一覧ページ」の両方に使う
 export function generateStaticParams() {
-  return articles.map((a) => ({ category: a.category, slug: a.slug }));
+  return [
+    ...articles.map((a) => ({ category: a.category, slug: a.slug })),
+    ...sectionPages().map(({ c, s }) => ({ category: c.id, slug: s.id })),
+  ];
 }
+
+const findSection = (category: string, slug: string) => sectionPages().find(({ c, s }) => c.id === category && s.id === slug);
 
 type Params = Promise<{ category: string; slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const a = getArticle((await params).slug);
-  return { title: a?.title };
+  const { category, slug } = await params;
+  const sp = findSection(category, slug);
+  if (sp) return { title: `${sp.s.name}の記事一覧` };
+  return { title: getArticle(slug)?.title };
 }
 
 function PrevNextCard({ a, dir, fallback }: { a?: Article; dir: "prev" | "next"; fallback: { name: string; href: string } }) {
@@ -54,6 +68,20 @@ function PrevNextCard({ a, dir, fallback }: { a?: Article; dir: "prev" | "next";
 
 export default async function ArticlePage({ params }: { params: Params }) {
   const { category, slug } = await params;
+  const sp = findSection(category, slug);
+  if (sp) {
+    return (
+      <ListLayout
+        crumbs={[{ name: sp.s.name }]}
+        current={sp.s.id}
+        title={`${sp.s.name}の記事一覧`}
+        count={sp.s.articles.length}
+        icon={<SectionIcon name={sp.s.icon} size={30} />}
+      >
+        <ArticleRows items={sp.s.articles.map(mustArticle)} />
+      </ListLayout>
+    );
+  }
   const a = getArticle(slug);
   if (!a || a.category !== category) notFound();
   const c = getCategory(a.category)!;
@@ -95,7 +123,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
         <ul className="mt-3 divide-y divide-line text-sm">
           {categories.map((x) => (
             <li key={x.id}>
-              <a href={categoryUrl(x.id)} className={`flex min-h-11 items-center justify-between hover:text-orange ${x.id === c.id ? "font-bold" : ""}`}>
+              <a href={categoryUrl(x.id)} className={`flex min-h-11 items-center justify-between hover:text-sky-ink ${x.id === c.id ? "font-bold" : ""}`}>
                 {x.name} <ArrowRight size={14} aria-hidden="true" />
               </a>
             </li>
@@ -110,7 +138,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
       <Breadcrumb
         items={[
           { name: c.name, href: categoryUrl(c.id) },
-          ...(section && c.sections.length > 1 ? [{ name: section.name, href: "#" }] : []),
+          ...(section && c.sections.length > 1 ? [{ name: section.name, href: sectionUrl(c, section) }] : []),
           { name: a.title },
         ]}
       />
@@ -129,7 +157,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
                 {c.name}
               </a>
               {section && c.sections.length > 1 && (
-                <a href={"#"} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-ink">
+                <a href={sectionUrl(c, section)} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-ink">
                   {section.name}
                 </a>
               )}
@@ -159,6 +187,9 @@ export default async function ArticlePage({ params }: { params: Params }) {
           ) : (
             <p className="mt-8 rounded-2xl border border-dashed border-line bg-white p-8 text-center text-sub">この記事は準備中です。</p>
           )}
+
+          {/* 評価ボタン：本文がある記事だけ。票は Cloudflare（functions/api/rate.js → D1）に数だけ残る */}
+          {a.blocks && <RatingButtons slug={a.slug} />}
 
           <div className="mt-8 space-y-6 md:hidden">{sideCards}</div>
 

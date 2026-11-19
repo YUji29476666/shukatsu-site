@@ -19,6 +19,11 @@ export const articles: Article[] = [
   // ボスキャリ
   stub("boston-career-forum", "ボストンキャリアフォーラム", "bosscari", "ボストンキャリアフォーラム"),
   stub("growth-mindset", "Growth Mind Set", "bosscari", "Growth Mind Set", { popular: 1 }),
+  // ボスキャリの応募準備〜直前・当日リマインド（Ryugaku Wiki のボスキャリのページ）。応募・面接の同じ名前の記事とは別の記事（ユーザーの指示）
+  stub("application-prep", "応募準備", "bosscari", "応募準備"),
+  stub("selection-tests", "選考試験", "bosscari", "選考試験"),
+  stub("interview-prep", "面接対策", "bosscari", "面接対策", { popular: 2 }),
+  stub("final-check", "直前・当日リマインド", "bosscari", "直前・当日リマインド"),
   // 就活タイムライン
   stub("timeline-art", "アート系の就活タイムライン", "timeline", "就活タイムライン/アート系"),
   stub("timeline-business", "ビジネス系の就活タイムライン", "timeline", "就活タイムライン/ビジネス系", { popular: 3 }),
@@ -36,16 +41,17 @@ export const articles: Article[] = [
   stub("sekaia", "Sekaia", "jobs", "Sekaia"),
   stub("finance-economics-academy", "金融経済アカデミー", "jobs", "金融経済アカデミー"),
   // 応募・面接
-  stub("application-prep", "応募準備", "selection", "応募準備"),
+  // 応募・面接の応募準備・選考試験・面接対策・直前・当日リマインド：ボスキャリの記事とは別。もとの Wiki のページ名は未確認（origin は空）
+  stub("shukatsu-application-prep", "応募準備", "selection", ""),
   stub("self-analysis", "自己分析", "selection", "応募準備/自己分析"),
   stub("entry-sheet", "ES", "selection", "応募準備/ES"),
   stub("resume", "履歴書", "selection", "応募準備/履歴書"),
-  stub("selection-tests", "選考試験", "selection", "選考試験"),
+  stub("shukatsu-selection-tests", "選考試験", "selection", ""),
   stub("spi", "SPI", "selection", "選考試験対策/SPI", { popular: 6 }),
   stub("tamatebako", "玉手箱", "selection", "選考試験対策/玉手箱"),
   stub("tg-web", "TG-WEB", "selection", "選考試験対策/TG-WEB"),
   stub("coding-test", "コーディングテスト", "selection", "選考試験対策/コーディングテスト"),
-  stub("interview-prep", "面接対策", "selection", "面接対策", { popular: 2 }),
+  stub("shukatsu-interview-prep", "面接対策", "selection", ""),
   stub("star-story", "STARストーリー", "selection", "STARストーリー"),
   stub("self-introduction", "自己紹介", "selection", "自己紹介"),
   stub("gakuchika", "ガクチカ", "selection", "ガクチカ"),
@@ -57,5 +63,5 @@ export const articles: Article[] = [
   stub("case-interview", "ケース面接", "selection", "ケース面接"),
   stub("technical-interview", "テクニカル面接", "selection", "テクニカル面接"),
   stub("manners", "マナー・服装", "selection", ""),
-  stub("final-check", "直前・当日リマインド", "selection", "直前・当日リマインド"),
+  stub("shukatsu-final-check", "直前・当日リマインド", "selection", ""),
 ];

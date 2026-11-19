@@ -17,6 +17,9 @@ jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      # Slack 通知用（仮置き）。Secrets に無ければ空のままで、通知は送らない
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -26,14 +29,15 @@ jobs:
       - run: npm ci
       - id: check
         run: node scripts/check-sources.mjs
-      - name: 前回の文字を保存
+      - name: 前回の文字と鮮度一覧を保存
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/source-snapshots.json
+          git add data/source-snapshots.json data/freshness.csv
           # [CF-Pages-Skip]：この保存では Cloudflare のサイトを作り直さない
           git diff --cached --quiet || (git commit -m "出典の自動チェックの記録を更新 [CF-Pages-Skip]" && git push)
       - name: 要確認があれば Issue を作る
+        id: issue
         if: steps.check.outputs.needs != '0'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -42,6 +46,17 @@ jobs:
           open=$(gh issue list --state open --search "出典の自動チェック：要確認 in:title" --json number --jq '.[0].number')
           if [ -n "$open" ]; then
             gh issue comment "$open" --body-file check-report.md
+            url="${{ github.server_url }}/${{ github.repository }}/issues/$open"
           else
-            gh issue create --title "出典の自動チェック：要確認" --body-file check-report.md
+            url=$(gh issue create --title "出典の自動チェック：要確認" --body-file check-report.md)
           fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+      # Slack への通知（仮置き）。リポジトリの Secrets に SLACK_WEBHOOK_URL があるときだけ送る
+      - name: Slack に知らせる
+        if: steps.check.outputs.needs != '0' && env.SLACK_WEBHOOK_URL != ''
+        env:
+          NEEDS: ${{ steps.check.outputs.needs }}
+          URL: ${{ steps.issue.outputs.url }}
+        run: |
+          jq -n --arg t "出典の自動チェック：要確認が ${NEEDS} 件あります。 ${URL}" '{text: $t}' \
+            | curl -sS -X POST -H 'content-type: application/json' --data @- "$SLACK_WEBHOOK_URL"

@@ -54,21 +54,14 @@ const script = `
 const LIMIT = 4; // パネルに最初に見せる記事の数
 
 function MoreButton({ id, name, className }: { id: string; name: string; className: string }) {
-  const label = `${name}の記事をもっと見る`;
   return (
-    <button
-      type="button"
-      data-more-btn={id}
-      data-label={label}
-      aria-expanded="false"
-      aria-controls={`panel-${id}`}
+    <a
+      href={`/ja/${id}/`}
       className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-navy font-medium text-navy hover:bg-navy hover:text-white ${className}`}
     >
-      <span data-label>{label}</span>
-      <span data-icon className="inline-flex transition-transform">
-        <ChevronDown size={16} aria-hidden="true" />
-      </span>
-    </button>
+      {name}の記事をもっと見る
+      <ChevronRight size={16} aria-hidden="true" />
+    </a>
   );
 }
 
@@ -92,9 +85,9 @@ export function CategoryTabs() {
                 tabIndex={i === 0 ? 0 : -1}
                 data-cat={c.id}
                 data-on={i === 0 ? "1" : "0"}
-                className="group flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-line bg-white px-4 text-left text-sm text-sub transition data-[on=1]:border-orange data-[on=1]:bg-orange data-[on=1]:text-white md:rounded-l-full md:rounded-r-none md:border-0 md:bg-transparent md:py-4 md:pl-5 md:data-[on=1]:bg-beige md:data-[on=1]:font-bold md:data-[on=1]:text-orange"
+                className="group flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-line bg-white px-4 text-left text-sm text-sub transition data-[on=1]:border-sky-ink data-[on=1]:bg-sky-ink data-[on=1]:text-white md:rounded-l-full md:rounded-r-none md:border-0 md:bg-transparent md:py-4 md:pl-5 md:data-[on=1]:bg-beige md:data-[on=1]:font-bold md:data-[on=1]:text-sky-ink"
               >
-                <span className="hidden h-1.5 w-1.5 rounded-full bg-transparent md:inline-block md:group-data-[on=1]:bg-orange" />
+                <span className="hidden h-1.5 w-1.5 rounded-full bg-transparent md:inline-block md:group-data-[on=1]:bg-sky-ink" />
                 <span className="whitespace-nowrap">{c.name}</span>
                 <span className="hidden whitespace-nowrap text-[10px] tracking-wider opacity-70 md:inline">— {c.en}</span>
                 <ChevronRight size={16} className="ml-auto hidden md:block" aria-hidden="true" />
@@ -120,10 +113,9 @@ export function CategoryTabs() {
             className="rounded-3xl bg-beige p-5 md:rounded-l-none md:p-8"
           >
             <ul>
-              {panelArticles(c).map((a, j) => (
+              {panelArticles(c).slice(0, LIMIT).map((a) => (
                 <li
                   key={a.slug}
-                  {...(j >= LIMIT ? { "data-extra": "", hidden: true } : {})}
                   className="border-b border-dashed border-[#dccbb5] last:border-0"
                 >
                   <a href={articleUrl(a)} className="group flex items-center gap-4 py-4 md:gap-6">

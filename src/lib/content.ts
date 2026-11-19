@@ -1,10 +1,25 @@
 import { articles } from "@/data/articles";
-import { categories } from "@/data/categories";
+import { browseOrder, categories } from "@/data/categories";
+import { intervalFor } from "@/data/review";
 import type { Article, Category, CategoryId, Section, ReviewInterval } from "@/data/types";
 
 export const articleUrl = (a: Article) => `/ja/${a.category}/${a.slug}/`;
-// カテゴリページは作らない方針のため、リンク先は「#」
-export const categoryUrl = (_id: CategoryId) => "#";
+export const categoryUrl = (id: CategoryId) => `/ja/${id}/`;
+/** 中の分け方のリンク先。sectionPages のカテゴリは分け方ごとの記事一覧ページ、ほかはカテゴリページの中の見出し */
+export function sectionUrl(c: Category, s: Section): string {
+  if (c.sectionPages) return `/ja/${c.id}/${s.id}/`;
+  return c.sections.length > 1 ? `${categoryUrl(c.id)}#${s.id}` : categoryUrl(c.id);
+}
+
+/** 記事一覧ページを作る分け方（sectionPages のカテゴリだけ）。記事の slug と URL が重なったら止める */
+export function sectionPages(): { c: Category; s: Section }[] {
+  const out = categories.filter((c) => c.sectionPages).flatMap((c) => c.sections.map((s) => ({ c, s })));
+  for (const { c, s } of out) {
+    if (articles.some((a) => a.category === c.id && a.slug === s.id)) throw new Error(`分け方の id「${s.id}」が記事の slug と同じです（src/data/categories.ts）`);
+  }
+  return out;
+}
+
 
 export function getCategory(id: string): Category | undefined {
   return categories.find((c) => c.id === id);
@@ -78,13 +93,13 @@ export function panelPills(c: Category): { name: string; href: string }[] {
 
 export const dateOrPlaceholder = (d: string) => d || "［日付］";
 
-export const intervalLabel: Record<ReviewInterval, string> = { "3m": "3か月ごと", "6m": "6か月ごと", "12m": "12か月ごと" };
+export const intervalLabel: Record<ReviewInterval, string> = { "1m": "1か月ごと", "3m": "3か月ごと", "6m": "6か月ごと", "12m": "12か月ごと" };
 
 /** 次の見直し予定日（YYYY-MM-DD）。最終確認日と見直しの間隔から計算する。どちらかがなければ空 */
 export function nextReview(a: Article): string {
-  if (!a.lastChecked || !a.reviewInterval) return "";
+  if (!a.lastChecked) return "";
   const [y, m, d] = a.lastChecked.split("-").map(Number);
-  const months = Number(a.reviewInterval.replace("m", ""));
+  const months = Number(intervalFor(a).replace("m", ""));
   const t = new Date(Date.UTC(y, m - 1 + months, d));
   return t.toISOString().slice(0, 10);
 }
@@ -106,4 +121,15 @@ export function searchText(a: Article): string {
 /** サイト内のすべての記事（カテゴリの並び順） */
 export function allArticles(): Article[] {
   return categories.flatMap((c) => sequenceOf(c.id));
+}
+
+/** トップの「カテゴリから探す」に並べる項目：sectionPages のカテゴリ（応募・面接）は分け方ごと、ほかはカテゴリそのもの */
+export function browseItems(sorted = true): { id: string; name: string; href: string; icon: Section["icon"] }[] {
+  const items = categories.flatMap((c) =>
+    c.sectionPages
+      ? c.sections.map((s) => ({ id: s.id, name: s.name, href: sectionUrl(c, s), icon: s.icon }))
+      : [{ id: c.id, name: c.shortName ?? c.name, href: categoryUrl(c.id), icon: c.icon }],
+  );
+  const rank = (id: string) => (browseOrder.includes(id) ? browseOrder.indexOf(id) : browseOrder.length);
+  return sorted ? items.sort((a, b) => rank(a.id) - rank(b.id)) : items; // sorted=false：カテゴリの並び順のまま（サイドバー）
 }

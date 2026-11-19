@@ -3,7 +3,9 @@
 // やること
 // 1. 記事データ（src/data）の出典の URL を全部開き、リンク切れを調べる
 // 2. ページの文字を前回と比べ、変わった出典を探す（前回の文字は data/source-snapshots.json に保存）
-// 3. 最終確認日＋見直し間隔から、見直しの時期が来た（または14日以内に来る）記事を探す
+// 3. 最終確認日＋見直し間隔（src/data/review.ts）から、見直しの時期が来た（または7日以内に来る）記事を探す。
+//    記事の reviewBy（開催日の翌日など）を過ぎた記事も入れる。最終確認日がない記事は「未確認」として一覧だけ出す
+// 5. 全記事の鮮度一覧を data/freshness.csv に書く（Google スプレッドシートの IMPORTDATA で読む。見るだけの一覧）
 // 4. 結果を check-report.md に書く。要確認があれば終了コード 0 のまま report の先頭に「要確認あり」と書く
 //
 // やらないこと：変わった内容が記事の誤りかどうかの判断（人が Claude に「この記事を確認して」と頼む）
@@ -17,9 +19,11 @@ import ts from "typescript";
 
 const ROOT = process.cwd();
 const SNAP_FILE = path.join(ROOT, "data/source-snapshots.json");
+const CSV_FILE = path.join(ROOT, "data/freshness.csv");
+const SITE = "https://shukatsu-site.pages.dev";
 const REPORT_FILE = path.join(ROOT, "check-report.md");
 const TODAY = process.env.CHECK_TODAY || new Date().toISOString().slice(0, 10);
-const SOON_DAYS = 14;
+const SOON_DAYS = 7; // 見直し日の7日前から知らせる（毎週のチェックで必ず1回は拾える）
 
 // --- 記事データ（TypeScript）を読み込む：一時フォルダに .mjs として書き出して import する
 async function loadArticles() {
@@ -36,8 +40,10 @@ async function loadArticles() {
     writeFileSync(dest, code);
   }
   const mod = await import(pathToFileURL(path.join(out, "articles.mjs")).href);
+  const review = await import(pathToFileURL(path.join(out, "review.mjs")).href);
+  const cats = await import(pathToFileURL(path.join(out, "categories.mjs")).href);
   rmSync(out, { recursive: true, force: true });
-  return mod.articles;
+  return { articles: mod.articles, intervalFor: review.intervalFor, categories: cats.categories };
 }
 
 // --- ページの文字を取り出す（タグ・スクリプト・スタイルを除き、空白をまとめる）
@@ -92,7 +98,9 @@ function changedPart(before, after) {
   return { before: cut(before.slice(Math.max(0, i - 40), before.length - j)), after: cut(after.slice(Math.max(0, i - 40), after.length - j)) };
 }
 
-const articles = await loadArticles();
+const { articles, intervalFor, categories } = await loadArticles();
+const urlOf = (a) => `${SITE}/ja/${a.category}/${a.slug}/`;
+const catName = (a) => categories.find((c) => c.id === a.category)?.name ?? a.category;
 const snaps = existsSync(SNAP_FILE) ? JSON.parse(readFileSync(SNAP_FILE, "utf8")) : {};
 const newSnaps = { ...snaps };
 
@@ -101,6 +109,8 @@ const changed = []; // 前回から文字が変わった
 const added = []; // 初めて記録した
 const manual = []; // 自動では開かない出典（autoCheck: false）
 const due = []; // 見直しの時期
+const unchecked = []; // 最終確認日がない（まだ人が確かめていない）
+const rows = []; // 鮮度一覧（CSV）
 
 const byUrl = new Map(); // 同じ URL を何度も開かない
 for (const a of articles) {
@@ -112,11 +122,19 @@ for (const a of articles) {
     if (!byUrl.has(s.url)) byUrl.set(s.url, []);
     byUrl.get(s.url).push({ article: a, source: s });
   }
-  if (a.lastChecked && a.reviewInterval) {
-    const next = addMonths(a.lastChecked, Number(a.reviewInterval.replace("m", "")));
-    const left = daysBetween(TODAY, next);
-    if (left <= SOON_DAYS) due.push({ article: a, next, left });
+  const interval = intervalFor(a);
+  let next = "", left = "", status = "未確認", reason = "";
+  if (a.lastChecked) {
+    next = addMonths(a.lastChecked, Number(interval.replace("m", "")));
+    // 開催日などの reviewBy が先に来るなら、そちらを見直し日にする
+    if (a.reviewBy && a.reviewBy < next) { next = a.reviewBy; reason = "日程が過ぎる"; }
+    left = daysBetween(TODAY, next);
+    status = left < 0 ? "期限切れ" : left <= SOON_DAYS ? "まもなく" : "OK";
+    if (left <= SOON_DAYS) due.push({ article: a, next, left, interval, reason });
+  } else {
+    unchecked.push(a);
   }
+  rows.push([a.title, catName(a), urlOf(a), a.lastChecked || "", interval.replace("m", "か月"), a.reviewBy || "", next, left, status, a.blocks ? "あり" : "準備中"]);
 }
 
 for (const [url, uses] of byUrl) {
@@ -162,8 +180,17 @@ if (changed.length) {
 }
 if (due.length) {
   L.push(`## 見直しの時期が来た記事（${SOON_DAYS}日以内を含む）`, "");
-  for (const d of due) L.push(`- ${d.article.title}：見直し予定日 ${d.next}（${d.left < 0 ? `${-d.left}日過ぎています` : d.left === 0 ? "今日" : `あと${d.left}日`}）`);
-  L.push("");
+  for (const d of due) {
+    const when = d.left < 0 ? `${-d.left}日過ぎています` : d.left === 0 ? "今日" : `あと${d.left}日`;
+    L.push(`### ${d.article.title}（${catName(d.article)}）`, "");
+    L.push(`- 見直し日：${d.next}（${when}）${d.reason ? `｜理由：${d.reason}` : `｜最終確認日 ${d.article.lastChecked} から ${d.interval.replace("m", "か月")}`}`);
+    L.push(`- 記事：${urlOf(d.article)}`);
+    if (d.article.sources?.length) {
+      L.push("- 確かめる出典：");
+      for (const s of d.article.sources) L.push(`  - ${s.title}（${s.publisher}）${s.url}｜${s.supports}`);
+    }
+    L.push("- 終わったら：Claude に「" + d.article.title + " を確認した。最終確認日を今日にして」（直す所があれば一緒に伝える）", "");
+  }
 }
 if (manual.length) {
   L.push("## 自動では確かめない出典（見直しの時期に人が確かめる）", "");
@@ -175,7 +202,18 @@ if (added.length) {
   for (const a of added) L.push(`- ${a.url}（${a.where}）`);
   L.push("");
 }
+if (unchecked.length) {
+  // 未確認は毎週ずっと出るので「要確認」の件数には入れない（本文を書いて人が確かめたら、最終確認日を入れる）
+  L.push(`<details><summary>未確認の記事（最終確認日がない）：${unchecked.length}本</summary>`, "");
+  for (const a of unchecked) L.push(`- ${a.title}（${catName(a)}${a.blocks ? "" : "・準備中"}）`);
+  L.push("", "</details>", "");
+}
 writeFileSync(REPORT_FILE, L.join("\n"));
+
+// --- 鮮度一覧（CSV）。スプレッドシートで見るためのもの。ここで日付を書き換えてもサイトには戻らない
+const csvCell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
+const header = ["記事", "カテゴリ", "URL", "最終確認日", "見直しの間隔", "日程の見直し日", "次の見直し日", "あと何日", "状態", "本文"];
+writeFileSync(CSV_FILE, [header, ...rows].map((r) => r.map(csvCell).join(",")).join("\n") + "\n");
 console.log(L.join("\n"));
 // GitHub Actions に「要確認があるか」を伝える
 if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `needs=${needs}\n`, { flag: "a" });

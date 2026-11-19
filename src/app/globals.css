@@ -1,18 +1,20 @@
 @import "tailwindcss";
 
-/* 色・文字の決まり（DESIGN：信頼ネイビー＋アンバー） */
+/* 色・文字の決まり：全体は薄い水色、差し色は水色（ユーザーの指示。PORTキャリアの色味を参考）、文字とボタンはネイビー */
 @theme {
-  --color-page: #f8fafc;
+  --color-page: #f1f8fc; /* ページの背景：薄い水色 */
   --color-navy: #0f2a4a;
   --color-navy-soft: #1e3a5f;
   --color-ink: #1f2937;
   --color-sub: #5b6475;
-  --color-line: #e8edf3;
+  --color-line: #d8e9f3;
   --color-amber: #f59e0b;
   --color-amber-soft: #fef3c7;
   --color-amber-ink: #92400e;
-  --color-beige: #f6f1ea;
-  --color-orange: #c2541a;
+  --color-beige: #e4f2fa; /* パネル・帯：水色 */
+  --color-sky: #1e9fd8; /* アイコン・丸・飾り（文字には使わない） */
+  --color-sky-ink: #0a6fa3; /* 水色の文字・リンクの hover（白地で 4.5:1 以上） */
+  --color-sky-soft: #e4f2fa;
   --font-sans: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
 }
 
@@ -28,7 +30,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 :focus-visible {
-  outline: 2px solid var(--color-orange);
+  outline: 2px solid var(--color-sky-ink);
   outline-offset: 2px;
 }
 /* 本文の読みやすさ（1行35〜40文字程度） */
