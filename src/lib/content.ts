@@ -1,6 +1,6 @@
 import { articles } from "@/data/articles";
 import { browseOrder, categories } from "@/data/categories";
-import { defaultReviewInterval } from "@/data/review";
+import { intervalFor } from "@/data/review";
 import type { Article, Category, CategoryId, Section, ReviewInterval } from "@/data/types";
 
 export const articleUrl = (a: Article) => `/ja/${a.category}/${a.slug}/`;
@@ -99,7 +99,7 @@ export const intervalLabel: Record<ReviewInterval, string> = { "1m": "1か月ご
 export function nextReview(a: Article): string {
   if (!a.lastChecked) return "";
   const [y, m, d] = a.lastChecked.split("-").map(Number);
-  const months = Number((a.reviewInterval ?? defaultReviewInterval).replace("m", ""));
+  const months = Number(intervalFor(a).replace("m", ""));
   const t = new Date(Date.UTC(y, m - 1 + months, d));
   return t.toISOString().slice(0, 10);
 }

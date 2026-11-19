@@ -62,6 +62,7 @@ export type Article = {
   popular?: number; // よく読まれている記事の順番（小さいほど上）
   related?: string[]; // 関連記事（手で指定。なければ自動）
   lastChecked: string; // 最終確認日＝人が記事全体を確かめた日。人だけが入れる（未確認は空）
+  reviewBy?: string; // この日（YYYY-MM-DD）を過ぎたら、間隔を待たずに見直しを知らせる（フォーラムの開催日の翌日など。出典で確かめた日付だけ）
   reviewInterval?: ReviewInterval; // 書かなければ全記事共通の間隔（src/data/review.ts）。次の見直し予定日は最終確認日＋間隔で計算する（保存しない）
   updated: string; // 更新日（未確認は空）
   origin?: string; // Ryugaku Wiki のページ名

@@ -10,7 +10,8 @@ export const losAngelesCareerForum: Article = {
   title: "ロサンゼルスキャリアフォーラム",
   category: "jobs",
   origin: "ロサンゼルスキャリアフォーラム",
-  lastChecked: "2026-11-18", // ユーザーが確認日として指定（AI は自分では入れない）
+  lastChecked: "2026-11-18",
+  reviewBy: "2027-05-17", // 2027年の開催（5月15〜16日。S1・S2 で確認）の翌日。過ぎたら次の年の日程に直す // ユーザーが確認日として指定（AI は自分では入れない）
   updated: "",
   sources: [
     {
