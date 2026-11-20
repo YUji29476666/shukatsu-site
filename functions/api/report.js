@@ -39,6 +39,14 @@ async function verifyTurnstile(secret, token) {
   }
 }
 
+// REPORT_REPO は「持ち主/リポジトリ名」。前後の空白や、URL のまま貼られた形（https://github.com/…/….git）も受け付ける
+const repoName = (v) =>
+  String(v ?? "")
+    .trim()
+    .replace(/^https?:\/\/github\.com\//i, "")
+    .replace(/\.git$/i, "")
+    .replace(/\/+$/, "");
+
 async function createIssue(env, { title, url, body, sourceUrl, createdAt }) {
   const issue = {
     title: `[読者の報告] ${title}`,
@@ -57,7 +65,7 @@ async function createIssue(env, { title, url, body, sourceUrl, createdAt }) {
     labels: [LABEL],
   };
   const post = (payload) =>
-    fetch(`https://api.github.com/repos/${env.REPORT_REPO}/issues`, {
+    fetch(`https://api.github.com/repos/${repoName(env.REPORT_REPO)}/issues`, {
       method: "POST",
       headers: {
         authorization: `Bearer ${env.GITHUB_TOKEN}`,
@@ -75,7 +83,7 @@ async function createIssue(env, { title, url, body, sourceUrl, createdAt }) {
   }
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`github-${res.status}: ${text.slice(0, 300)}`);
+    throw new Error(`github-${res.status} (repo=${repoName(env.REPORT_REPO)}): ${text.slice(0, 200)}`);
   }
   const d = await res.json();
   if (typeof d.number !== "number") throw new Error("github-no-number");
