@@ -5,7 +5,7 @@ import { ArrowRight, Flag } from "lucide-react";
 import { site } from "@/data/site";
 
 // 記事の誤りを報告する枠。「報告する」で入力欄が開き、その場で送れる。
-// 送ると /api/report（Cloudflare Pages Functions）が Turnstile で確かめてから D1 に保存し、報告用の非公開リポジトリに Issue を立てる。
+// 送ると /api/report（Cloudflare Pages Functions）が Turnstile で確かめてから D1 に保存し、サイトのリポジトリに Issue を立てる（中身は公開される）。
 // 連絡先・名前は聞かない（ユーザーと決めた）。Turnstile のスクリプトは、入力欄を開いたときだけ読み込む。
 
 type TurnstileApi = {

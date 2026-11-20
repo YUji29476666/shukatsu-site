@@ -1,14 +1,15 @@
 // 記事の誤りの報告を受け取る Cloudflare Pages Functions。
 // 1. Cloudflare Turnstile で、人が送ったものか確かめる（ボット対策）
 // 2. Cloudflare D1 に保存する（消さずに残す。ユーザーと決めた）
-// 3. 報告用の「非公開」リポジトリに GitHub Issue を立てる（対応状況は Issue で管理する）
+// 3. REPORT_REPO のリポジトリに GitHub Issue を立てる（対応状況は Issue で管理する）
+//    今はサイトの公開リポジトリ（shukatsu-site）に立てるので、報告の中身は誰でも読める（ユーザーが決めた。2026-11-20）
 // 連絡先・名前・IP アドレスは受け取らない・保存しない。
 //
 // Pages の設定（本番・プレビュー両方）：
 //   D1 のつなぎ込み  DB
 //   環境変数（Secret） TURNSTILE_SECRET_KEY … Turnstile の秘密キー
-//                     GITHUB_TOKEN         … 報告用リポジトリの Issue だけ書ける GitHub のトークン
-//   環境変数          REPORT_REPO          … 報告用リポジトリ（例：YUji29476666/shukatsu-site-reports）。必ず非公開のリポジトリにする
+//                     GITHUB_TOKEN         … REPORT_REPO の Issue だけ書ける GitHub のトークン
+//   環境変数          REPORT_REPO          … Issue を立てるリポジトリ（今は YUji29476666/shukatsu-site）
 //
 // POST /api/report  本文：{"slug","title","path","body","sourceUrl","token"}
 

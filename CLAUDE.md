@@ -76,14 +76,14 @@ docs/ の資料（site-design-decisions.md、CLAUDE-old.md）は前のやり方�
 
 ## 記事の誤りの報告
 - 記事ページの「記事の誤りを報告する」の「報告する」で入力欄が開き、その場で送れる（src/components/ReportBox.tsx）。連絡先・名前は聞かない（ユーザーの指示）
-- 送ると `functions/api/report.js` が、Cloudflare Turnstile で人か確かめる → D1 の表 `reports` に保存（消さずに残す。ユーザーの指示）→ 報告用の**非公開**リポジトリに Issue「[読者の報告] 記事名」を立てる（ラベル「読者の報告」）。対応状況は Issue で管理する（閉じる＝対応済み）
-- このサイトのリポジトリは公開なので、報告の Issue はここには立てない（誰でも読めてしまう）
+- 送ると `functions/api/report.js` が、Cloudflare Turnstile で人か確かめる → D1 の表 `reports` に保存（消さずに残す。ユーザーの指示）→ このサイトのリポジトリ（shukatsu-site）に Issue「[読者の報告] 記事名」を立てる（ラベル「読者の報告」）。対応状況は Issue で管理する（閉じる＝対応済み）
+- shukatsu-site は公開リポジトリなので、**報告の中身は誰でも読める**。ユーザーが承知のうえで決めた（2026-11-20）。非公開にしたくなったら、非公開のリポジトリを作って `REPORT_REPO` とトークンの対象を変えるだけでよい（コードは変えなくてよい）
 - Turnstile のサイトキーは src/data/site.ts の `turnstileSiteKey`。空のあいだは「報告フォームは準備中です」と出る
-- Issue の作成に失敗しても報告は D1 に残る。確認：`SELECT * FROM reports WHERE issue_number IS NULL;`
+- Issue の作成に失敗しても報告は D1 に残り、理由が `issue_error` に入る。確認：`SELECT id, created_at, issue_number, issue_error FROM reports ORDER BY id DESC;`
 
 ## Cloudflare Pages の設定（本番・プレビュー両方）
 - D1 のつなぎ込み：`DB`
-- 環境変数：`TURNSTILE_SECRET_KEY`（Secret）、`GITHUB_TOKEN`（Secret。報告用リポジトリの Issue だけ書けるトークン）、`REPORT_REPO`（報告用の非公開リポジトリ。例：YUji29476666/shukatsu-site-reports）
+- 環境変数：`TURNSTILE_SECRET_KEY`（Secret）、`GITHUB_TOKEN`（Secret。shukatsu-site の Issue だけ書ける Fine-grained トークン。期限 2027-02-18）、`REPORT_REPO`（`YUji29476666/shukatsu-site`）
 - 表は API が最初に呼ばれたときに自動で作る（手で SQL を流さなくてよい）
 
 ## 出典チェックの Slack 通知（仮置き）
