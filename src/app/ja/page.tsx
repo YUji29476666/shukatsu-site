@@ -1,5 +1,4 @@
 import { CategoryGrid } from "@/components/CategoryGrid";
-import { EventSection } from "@/components/EventSection";
 import { Hero } from "@/components/Hero";
 import { Photo } from "@/components/Photo";
 import { popularSlots } from "@/data/site";
@@ -9,9 +8,6 @@ export default function Home() {
     <>
       <Hero />
       <CategoryGrid />
-      <div className="border-y border-line bg-white">
-        <EventSection />
-      </div>
       <section aria-labelledby="pop-h" className="mx-auto max-w-6xl px-5 py-16">
         <h2 id="pop-h" className="text-2xl font-bold tracking-tight">
           よく読まれている記事
