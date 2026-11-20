@@ -8,7 +8,7 @@ export const site = {
   searchPlaceholder: "知りたいことを入力（例：ボスキャリ、SPI、自己PR）",
   keywords: ["ボスキャリ", "ES", "SPI", "自己PR", "ケース面接", "LinkedIn"],
   // 誤りの報告フォームの Cloudflare Turnstile（ボット対策）のサイトキー。公開してよい値。空のあいだは「報告フォームは準備中です」と出る
-  turnstileSiteKey: "",
+  turnstileSiteKey: "0x4AAAAAAGKudEZJLWpzOq2q",
 };
 
 export const events = {
