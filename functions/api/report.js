@@ -73,9 +73,13 @@ async function createIssue(env, { title, url, body, sourceUrl, createdAt }) {
   if (res.status === 422 || res.status === 403) {
     res = await post({ title: issue.title, body: issue.body });
   }
-  if (!res.ok) return null;
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`github-${res.status}: ${text.slice(0, 300)}`);
+  }
   const d = await res.json();
-  return typeof d.number === "number" ? d.number : null;
+  if (typeof d.number !== "number") throw new Error("github-no-number");
+  return d.number;
 }
 
 export async function onRequestPost({ request, env }) {
@@ -103,18 +107,37 @@ export async function onRequestPost({ request, env }) {
   await env.DB.prepare(
     "CREATE TABLE IF NOT EXISTS reports (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT NOT NULL, title TEXT NOT NULL, body TEXT NOT NULL, source_url TEXT, issue_number INTEGER, created_at TEXT NOT NULL)",
   ).run();
+  // 失敗の理由を書く列（あとから足した列なので、なければ足す）
+  try {
+    await env.DB.prepare("ALTER TABLE reports ADD COLUMN issue_error TEXT").run();
+  } catch {
+    // すでにある
+  }
   const saved = await env.DB.prepare("INSERT INTO reports (slug, title, body, source_url, created_at) VALUES (?1, ?2, ?3, ?4, ?5) RETURNING id")
     .bind(slug, title, body, sourceUrl || null, createdAt)
     .first();
 
-  // Issue を立てる。失敗しても報告は D1 に残っている（issue_number が空のものを後で確認できる）
-  if (env.GITHUB_TOKEN && env.REPORT_REPO) {
+  // Issue を立てる。失敗しても報告は D1 に残り、失敗の理由を issue_error に書く（確認：SELECT id, created_at, issue_number, issue_error FROM reports ORDER BY id DESC;）
+  let issueError = null;
+  if (!env.GITHUB_TOKEN || !env.REPORT_REPO) {
+    issueError = `missing-config: GITHUB_TOKEN=${env.GITHUB_TOKEN ? "set" : "none"}, REPORT_REPO=${env.REPORT_REPO ? env.REPORT_REPO : "none"}`;
+  } else {
     try {
       const url = new URL(path, request.url).toString();
       const number = await createIssue(env, { title, url, body, sourceUrl, createdAt });
-      if (number && saved?.id) await env.DB.prepare("UPDATE reports SET issue_number = ?1 WHERE id = ?2").bind(number, saved.id).run();
-    } catch {
-      // Issue の作成に失敗しても、読者には「受け付けた」と返す
+      if (saved?.id) await env.DB.prepare("UPDATE reports SET issue_number = ?1 WHERE id = ?2").bind(number, saved.id).run();
+    } catch (e) {
+      issueError = String(e?.message ?? e).slice(0, 400);
+    }
+  }
+  if (issueError) {
+    console.error("report issue failed:", issueError);
+    if (saved?.id) {
+      try {
+        await env.DB.prepare("UPDATE reports SET issue_error = ?1 WHERE id = ?2").bind(issueError, saved.id).run();
+      } catch {
+        // issue_error の列がまだない古い表でも、受け付け自体は止めない
+      }
     }
   }
   return json({ ok: true });
