@@ -37,7 +37,6 @@ type State = "closed" | "open" | "sending" | "done" | "error";
 export function ReportBox({ slug, title, path }: { slug: string; title: string; path: string }) {
   const [state, setState] = useState<State>("closed");
   const [body, setBody] = useState("");
-  const [sourceUrl, setSourceUrl] = useState("");
   const [token, setToken] = useState("");
   const [message, setMessage] = useState("");
   const widget = useRef<HTMLDivElement>(null);
@@ -75,7 +74,7 @@ export function ReportBox({ slug, title, path }: { slug: string; title: string; 
       const res = await fetch("/api/report", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ slug, title, path, body, sourceUrl, token }),
+        body: JSON.stringify({ slug, title, path, body, token }),
       });
       if (!res.ok) throw new Error(String(res.status));
       setState("done");
@@ -135,22 +134,6 @@ export function ReportBox({ slug, title, path }: { slug: string; title: string; 
               />
               <p className="mt-1 text-right text-xs text-sub tabular-nums">{body.length} / 1000</p>
             </div>
-            <div>
-              <label htmlFor="report-url" className="text-sm font-bold">
-                正しい情報がのっているページの URL<span className="ml-1 text-xs font-normal text-sub">（わかれば）</span>
-              </label>
-              <input
-                id="report-url"
-                type="url"
-                maxLength={500}
-                inputMode="url"
-                placeholder="https://"
-                value={sourceUrl}
-                onChange={(e) => setSourceUrl(e.target.value)}
-                className="mt-2 min-h-11 w-full rounded-xl border border-line bg-white px-3 text-sm"
-              />
-            </div>
-            <p className="text-xs text-sub">名前や連絡先は書かないでください。お返事はしていません。</p>
             <div ref={widget} />
             <div className="flex flex-wrap items-center gap-3">
               <button
