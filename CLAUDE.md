@@ -36,7 +36,7 @@ docs/ の資料（site-design-decisions.md、CLAUDE-old.md）は前のやり方�
    - アイコン・名前・矢印を3列で並べる（スマホは1列）。PC は縦に「ボスキャリ・就活タイムライン」「応募準備・質問対策」「求人・就職」（並び順は categories.ts の browseOrder）
    - それぞれ記事一覧ページにつながる（/ja/bosscari/、/ja/timeline/、/ja/jobs/、/ja/selection/application/、/ja/selection/questions/）
    - 前のタブ＋ベージュのパネル（src/components/CategoryTabs.tsx）は今は使っていない
-（イベントのセクションはユーザーの指示で削除した。2026-11-20。EventSection.tsx と site.ts の events は使っていない。消すかどうかはユーザーに確認中）
+（イベントのセクションはユーザーの指示で削除した。2026-11-20。部品・文言・写真のコードも消した）
 4. よく読まれている記事：カード6枚（3列×2段）。どの記事を出すかはユーザーが後で決める。推測で選ばず、今は［後で記入］の空き枠
 5. フッター：［サイト名］と説明文、カテゴリ、ご案内・サポート、©
 

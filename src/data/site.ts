@@ -11,21 +11,10 @@ export const site = {
   turnstileSiteKey: "0x4AAAAAAGKudEZJLWpzOq2q",
 };
 
-export const events = {
-  banner: {
-    label: "グロキャリ主催",
-    title: "グロキャリのイベント・説明会",
-    text: "留学生の就活に役立つイベントを開催しています",
-    cta: "イベント情報を見る",
-    url: "#", // グロキャリのイベントページの URL（未定）
-  },
-};
-
 // 写真：Unsplash の無料写真（Unsplash License）を images.unsplash.com から直接表示している。credit は撮影者、url は写真のページ
 // 写真がない id は、カテゴリの色の「写真（仮）」を表示する
 export const photos: Record<string, { src: string; credit: string; url: string }> = {
   "hero": { src: "https://images.unsplash.com/photo-1729040270328-e6fe63597dac?auto=format&fit=crop&q=70&w=2000", credit: "Austin", url: "https://unsplash.com/photos/81Dvbf3e7so" },
-  "event": { src: "https://images.unsplash.com/photo-1626855428287-7ae49119eda6?auto=format&fit=crop&q=70&w=2000", credit: "Wei Zeng", url: "https://unsplash.com/photos/e_6kPuccYvk" },
   "growth-mindset": { src: "https://images.unsplash.com/photo-1762890515866-3b1b34e13133?auto=format&fit=crop&q=70&w=600", credit: "Austin Phillips", url: "https://unsplash.com/photos/Ek9x7Nav3Fw" },
   "application-prep": { src: "https://images.unsplash.com/photo-1654267288787-a571aecf0505?auto=format&fit=crop&q=70&w=600", credit: "Rui Silvestre", url: "https://unsplash.com/photos/9vxJQmZmTYU" },
   "selection-tests": { src: "https://images.unsplash.com/photo-1727109369808-fbab005cca4b?auto=format&fit=crop&q=70&w=600", credit: "C Cai", url: "https://unsplash.com/photos/nkgAw4SFsWM" },
